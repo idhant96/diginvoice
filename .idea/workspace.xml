@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f014d5b-2d8e-4522-943c-7916c9a5ca18" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/ocr.iml" afterPath="$PROJECT_DIR$/.idea/ocr.iml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/Receipt.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/products.png" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/idhant vision-74292052d962.json" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,18 +16,18 @@
       <file leaf-file-name="google_vision.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/document-scanner/document-scanner/google_vision.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="954">
+            <state relative-caret-position="575">
               <caret line="58" column="21" lean-forward="false" selection-start-line="58" selection-start-column="21" selection-end-line="58" selection-end-column="21" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exp.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="exp.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/exp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="17" column="23" lean-forward="false" selection-start-line="16" selection-start-column="23" selection-end-line="17" selection-end-column="23" />
+            <state relative-caret-position="235">
+              <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
               </folding>
@@ -40,18 +35,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/idhantCV/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1242">
-              <caret line="97" column="35" lean-forward="true" selection-start-line="97" selection-start-column="35" selection-end-line="97" selection-end-column="35" />
+            <state relative-caret-position="1386">
+              <caret line="140" column="26" lean-forward="true" selection-start-line="140" selection-start-column="26" selection-end-line="140" selection-end-column="26" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#1342#2072#0" expanded="false" />
                 <element signature="e#3107#3581#0" expanded="false" />
                 <element signature="e#3708#3735#0" expanded="false" />
                 <element signature="e#3914#3942#0" expanded="false" />
-                <element signature="e#5889#6170#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -85,9 +79,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="723" />
-    <option name="width" value="650" />
-    <option name="height" value="735" />
+    <option name="x" value="64" />
+    <option name="y" value="-11" />
+    <option name="width" value="1303" />
+    <option name="height" value="780" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -247,6 +242,14 @@
       <option name="presentableId" value="Default" />
       <updated>1513068017157</updated>
     </task>
+    <task id="LOCAL-00001" summary="something">
+      <created>1513681233973</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1513681233974</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -259,15 +262,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="723" y="0" width="1303" height="780" extended-state="6" />
+    <frame x="64" y="-11" width="1303" height="780" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32913387" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32970452" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23639192" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38235295" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3813814" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3592535" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19282869" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18601076" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -310,8 +314,38 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="something" />
+    <option name="LAST_COMMIT_MESSAGE" value="something" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -320,16 +354,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/exp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="17" column="23" lean-forward="true" selection-start-line="16" selection-start-column="23" selection-end-line="17" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/idhantCV/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="36">
@@ -340,7 +364,6 @@
             <element signature="e#3107#3581#0" expanded="false" />
             <element signature="e#3708#3735#0" expanded="false" />
             <element signature="e#3914#3942#0" expanded="false" />
-            <element signature="e#5889#6170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -373,7 +396,6 @@
             <element signature="e#3107#3581#0" expanded="false" />
             <element signature="e#3708#3735#0" expanded="false" />
             <element signature="e#3914#3942#0" expanded="false" />
-            <element signature="e#5889#6170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -396,7 +418,6 @@
             <element signature="e#3107#3581#0" expanded="false" />
             <element signature="e#3708#3735#0" expanded="false" />
             <element signature="e#3914#3942#0" expanded="false" />
-            <element signature="e#5889#6170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -429,7 +450,6 @@
             <element signature="e#3107#3581#0" expanded="false" />
             <element signature="e#3708#3735#0" expanded="false" />
             <element signature="e#3914#3942#0" expanded="false" />
-            <element signature="e#5889#6170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -472,7 +492,6 @@
             <element signature="e#3107#3581#0" expanded="false" />
             <element signature="e#3708#3735#0" expanded="false" />
             <element signature="e#3914#3942#0" expanded="false" />
-            <element signature="e#5889#6170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -517,7 +536,6 @@
             <element signature="e#3107#3581#0" expanded="false" />
             <element signature="e#3708#3735#0" expanded="false" />
             <element signature="e#3914#3942#0" expanded="false" />
-            <element signature="e#5889#6170#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -657,33 +675,40 @@
     <entry file="file://$PROJECT_DIR$/products.png" />
     <entry file="file://$PROJECT_DIR$/document-scanner/document-scanner/google_vision.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="954">
+        <state relative-caret-position="575">
           <caret line="58" column="21" lean-forward="false" selection-start-line="58" selection-start-column="21" selection-end-line="58" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/exp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="17" column="23" lean-forward="false" selection-start-line="16" selection-start-column="23" selection-end-line="17" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/idhantCV/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1242">
-          <caret line="97" column="35" lean-forward="true" selection-start-line="97" selection-start-column="35" selection-end-line="97" selection-end-column="35" />
+        <state relative-caret-position="1386">
+          <caret line="140" column="26" lean-forward="true" selection-start-line="140" selection-start-column="26" selection-end-line="140" selection-end-column="26" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
             <element signature="e#1342#2072#0" expanded="false" />
             <element signature="e#3107#3581#0" expanded="false" />
             <element signature="e#3708#3735#0" expanded="false" />
             <element signature="e#3914#3942#0" expanded="false" />
-            <element signature="e#5889#6170#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/idhant vision-a6ded53b5bde.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/exp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="235">
+          <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>
