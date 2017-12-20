@@ -1,0 +1,18 @@
+{
+  "table": [
+    "PRODUCT",
+    "PRD",
+    "PACKING",
+    "PCK",
+    "PACK",
+    "Op.Bal.Qty",
+    "Quantity",
+    "Receipt",
+    "Qty",
+    "Total",
+    "Issue",
+    "Closing",
+    "Near",
+    "Expiry"
+  ]
+}

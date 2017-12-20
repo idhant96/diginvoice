@@ -1,43 +1,79 @@
-import numpy as np
 import io
+import sys
+
 import cv2
 from google.cloud import vision
 from google.cloud.vision import types
-import sys
 
 
 class Ocr:
+    """
+    Ocr class
+    provides functions to perform different actions on image
+    """
+
+    # google vision client
+    google_vision_client = vision.ImageAnnotatorClient()
+
     def __init__(self):
-        self.client = vision.ImageAnnotatorClient()
-        self.image = self.prep_image = None
+        """
+        Ocr construction
+        Initialize instance variables
+        """
+        # image path
+        self.image_path = ''
+
+        # image instance
+        self.image = None
+
         self.content = {}
         self.y_val = self.x_val = {}
         self.y_min = self.y_max = self.x_min = self.x_max = 0
-        self.executed = False
         self.blocks = self.document = self.doc_blocks = None
 
-    def prepare_image(self, img):
-        self.image = cv2.imread('{}'.format(img))
-        with io.open("{}".format(img), 'rb') as image_file:
-            data = image_file.read()
-        self.prep_image = types.Image(content=data)
-        self.executed = True
-
-    def compute_contents(self, mode=1):
-        '''
-        :param type:
+    def set_image(self, img):
+        """
+        set image instance with the given url
+        :param img:
         :return:
-        '''
-        if self.executed is not True:
-            sys.exit('The API request was not prepared')
-        if mode == 1:
-            response = self.client.text_detection(image=self.prep_image)
-            self.blocks = response.text_annotations
-        elif mode == 2:
-            response = self.client.document_text_detection(image=self.prep_image)
-            self.document = response.full_text_annotation
-        else:
-            sys.exit('Invalid Type request')
+        """
+        self.image_path = '{}'.format(img)
+
+        # set image instance
+        self.image = cv2.imread(self.image_path)
+
+    def text_detection(self):
+        """
+        detect text from the image
+        :return:
+        """
+
+        # format image into google vision understandable
+        with io.open(self.image_path, 'rb') as image_file:
+            data = image_file.read()
+        vision_image = types.Image(content=data)
+
+        # detect text
+        response = Ocr.google_vision_client.text_detection(image=vision_image)
+
+        # get all detected blocks
+        return response.text_annotations
+
+    def document_text_detection(self):
+        """
+        detect document from image
+        :return:
+        """
+        # format image into google vision understandable
+        with io.open(self.image_path, 'rb') as image_file:
+            data = image_file.read()
+        vision_image = types.Image(content=data)
+
+        # detect text
+        response = Ocr.google_vision_client.document_text_detection(image=vision_image)
+
+        # get all detected blocks
+        return response.full_text_annotation
 
     def compute_document(self):
         '''
@@ -60,20 +96,23 @@ class Ocr:
                 print('Block Content: {}'.format(block_text))
                 print('Block Bounds:\n {}'.format(self.doc_blocks.bounding_box))
 
+    def select_roi_y(self, any_list_y):
+        self.__search_y(any_list_y)
+
     def search_col(self, title):
         x1 = x2 = 0
         for block in self.blocks:
             if block.description == title:
-                (x1,x2) = (block.bounding_poly.vertices[3].x,block.bounding_poly.vertices[2].x)
+                (x1, x2) = (block.bounding_poly.vertices[3].x, block.bounding_poly.vertices[2].x)
                 break
-        crop_img = self.image[self.y_min[0]:self.y_max[1],x1:x2]
+        crop_img = self.image[self.y_min[0]:self.y_max[1], x1:x2]
         cv2.imwrite('{}.png'.format(title), crop_img)
 
     def __search_y(self, any_list):
         # stores the y values (min and max ) for any given data (list)
         for block in self.blocks:
             if block.description in any_list:
-                # stores the TL y coordinate and BR u cordinate
+                # stores the TL y coordinate and BR u coordinate
                 self.y_val[block.description] = (block.bounding_poly.vertices[0].y, block.bounding_poly.vertices[2].y)
         self.y_min = min(self.y_val.values(), key=lambda t: t[0])
         self.y_max = max(self.y_val.values(), key=lambda t: t[1])
@@ -84,15 +123,12 @@ class Ocr:
     def __search_x(self, any_list):
         for block in self.blocks:
             if block.description in any_list:
-                #storing TL x cordinate  and
-                self.x_val[block.description] = (block.bounding_poly.vertices[0].x,block.bounding_poly.vertices[1].x)
+                # storing TL x cordinate  and
+                self.x_val[block.description] = (block.bounding_poly.vertices[0].x, block.bounding_poly.vertices[1].x)
         # self.x_min = min(list(self.x_val.values()))
         # self.x_max = max(list(self.x_val.values()))
         self.x_min = min(self.x_val.values(), key=lambda t: t[0])
         self.x_max = max(self.x_val.values(), key=lambda t: t[1])
-
-    def select_roi_y(self, any_list_y):
-        self.__search_y(any_list_y)
 
     def select_roi_x(self, any_list_x):
         self.__search_x(any_list_x)
@@ -100,7 +136,7 @@ class Ocr:
     def cropper_y(self, name):
         crop_img = self.image[self.y_min[0]:self.y_max[1], 0:]
         cv2.imwrite("{}.png".format(name), crop_img)
-        #return crop_img
+        # return crop_img
 
     # def cropper_x(self, name):
     #     crop_img = self.image[:self.y_max, self]

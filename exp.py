@@ -1,19 +1,26 @@
-from idhantCV import Ocr
-import cv2
-# any_list_y = ['CADYPHYLATE LIQ', 'CIPROBID 250 MG TAB', 'CIPROBID 500 MG TAB', 'CIPROBID INFUSION',
-#             'CYTDLOG 200mg TAB', 'DECANEUROBOL 50 INJ', 'DEXONA AMP [2ML]', 'DEXONA TAB [1*20]',
-#             'MIFEGEST TAB', 'NEUROBOL CAP $', 'NEUROBOL INJ $']
-any_list_y = ['CADIPHYLATE', 'CIPROBID', 'CIPROBID', 'CIPROBID INFUSION',
-            'CYTDLOG', 'DECANEUROBOL', 'DEXONA', 'DEXONA]',
-            'MIFEGEST', 'NEUROBOL', 'NEUROBOL','Neurobol*','IVORAL',
-              ]
-#
-common_list = ['PRODUCT', 'PACKING', 'Op.Bal.Qty', 'Receipt','Qty','Total', 'Issue','Closing', 'Near','Expiry']
+# import OCR file
+from core import Ocr
 
+# import open cv version 2
+import cv2
+
+# import json
+import json
+
+# get list of products
+with open('./data/products.json') as product_file:
+    products = json.load(product_file)['products']
+
+
+# get table headers
+with open('./data/headers.json') as product_file:
+    common_list = json.load(open('data/headers.json'))['table']
+
+# create OCR instance
 x = Ocr()
-x.prepare_image('jammu.jpg')
-x.compute_contents(1)
-x.select_roi_y(any_list_y)
+x.set_image('images/jammu.jpg')
+blocks = x.text_detection()
+x.select_roi_y(products)
 x.cropper_y('products')
 x.search_col('Receipt')
 # cv2.imshow('marked',image)
