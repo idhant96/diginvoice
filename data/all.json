@@ -1,5 +1,5 @@
 {
-  "products": [
+  "all": [
     "CADIPHYLATE",
     "CIPROBID",
     "CIPROBID",
@@ -13,6 +13,19 @@
     "NEUROBOL",
     "Neurobol*",
     "IVORAL",
-
+     "PRODUCT",
+    "PRD",
+    "PACKING",
+    "PCK",
+    "PACK",
+    "Op.Bal.Qty",
+    "Quantity",
+    "Receipt",
+    "Qty",
+    "Total",
+    "Issue",
+    "Closing",
+    "Near",
+    "Expiry"
   ]
 }
