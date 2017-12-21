@@ -1,2 +1,2 @@
-from Ocr import Ocr
-from Operations import Operations
+from working import Ocr
+from working import Operations

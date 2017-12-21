@@ -1,6 +1,6 @@
 # import OCR file
-from working import Ocr
-from working import Operations
+from working.Ocr import Ocr
+from working.Operations import Operations
 # import open cv version 3
 import cv2
 

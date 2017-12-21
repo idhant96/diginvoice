@@ -5,7 +5,7 @@
     "PACKING",
     "PCK",
     "PACK",
-    "Op.Bal.Qty",
+    "Op Bal Qty",
     "Quantity",
     "Receipt",
     "Qty",
@@ -13,6 +13,18 @@
     "Issue",
     "Closing",
     "Near",
-    "Expiry"
+    "Expiry",
+    "CAS",
+    "QTY FR",
+    "PARTICULARS",
+    "MF NAME",
+    "BATCH",
+    "EXP",
+    "MRP.",
+    "PTR",
+    "GST",
+    "DIS",
+    "AMOUNT"
+
   ]
 }
