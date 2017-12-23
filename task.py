@@ -15,6 +15,8 @@ QTY is not spell checkable
 contents = {}
 #stores spell checked words
 check = []
+#stores the data in form of rows
+rows = {}
 
 #  Headers Data
 data = None
@@ -61,29 +63,45 @@ def get_contents():
 
 
 #needs get_contents return val
-def get_lines(content_data):
+def get_rows(content_data):
     y_min = 0
     line = 1
     for key in content_data.keys():
         vertice = content_data[key]
-        if line == 1:
-            y_min = vertice[0][1]
-        current_y = vertice[0][1]
-        while True:
-            if y_min <= current_y + 5 or y_min >= current_y - 5:
-                print("line {}: ".format(line), )
-                print(key)
-                break
-            else:
-                y_min = current_y
+        if y_min == 0:
+            y_min = (vertice[0][1] + vertice[3][1]) / 2
+            rows['line{}'.format(line)] = []
+        current_y = (vertice[0][1] + vertice[3][1]) / 2
+        if current_y <= (y_min + 10) and current_y >= (y_min - 10):
+            rows['line{}'.format(line)].append(key)
+        else:
+            y_min = current_y
+            line = line + 1
+            rows['line{}'.format(line)] = []
+            rows['line{}'.format(line)].append(key)
 
 
-
+def get_cols(content_data):
+    x_min = 0
+    line = 1
+    for key in content_data.keys():
+        vertice = content_data[key]
+        if x_min == 0:
+            y_min = (vertice[0][0] + vertice[1][0]) / 2
+            rows['line{}'.format(line)] = []
+        current_y = (vertice[0][1] + vertice[3][1]) / 2
+        if current_y <= (y_min + 10) and current_y >= (y_min - 10):
+            rows['line{}'.format(line)].append(key)
+        else:
+            y_min = current_y
+            line = line + 1
+            rows['line{}'.format(line)] = []
+            rows['line{}'.format(line)].append(key)
 
 
 get_contents()
-get_lines(contents)
-
+get_rows(contents)
+print(rows['line17'])
 
 
 
