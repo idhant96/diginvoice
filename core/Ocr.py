@@ -1,9 +1,17 @@
 import io
-import sys
-
+import json
+from enchant import DictWithPWL
+from enchant.checker import SpellChecker
+import enchant
 import cv2
 from google.cloud import vision
 from google.cloud.vision import types
+import re
+
+'''
+Functions needs to be distributed
+'''
+
 
 
 class Ocr:
@@ -25,11 +33,39 @@ class Ocr:
 
         # image instance
         self.image = None
-
+        self.dictionary = None
+        self.personal = None
+        self.checker = None
         self.content = {}
         self.y_val = self.x_val = {}
         self.y_min = self.y_max = self.x_min = self.x_max = 0
         self.blocks = self.document = self.doc_blocks = None
+
+    def __cleaner(self,strs):
+        return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', strs)
+
+    def load_spellings(self,data):
+        self.dictionary = DictWithPWL("en_US")
+        self.checker = SpellChecker(self.dictionary)
+        self.personal = enchant.Dict()
+        # Adding the personal words to dict
+        for element in data:
+            self.personal.add(element)
+
+    def __spell_check(self, e_word, data):
+        e_word = self.__cleaner(e_word)
+        if e_word:
+            self.checker.set_text(e_word)
+            if self.checker.check(e_word) is False:
+                if self.personal.check(e_word) is False:
+                    if self.personal.suggest(e_word) != []:
+                        for element in data:
+                            if element == self.personal.suggest(e_word)[0]:
+                                return element
+                    return None
+        else:
+            return None
+        return e_word
 
     def set_image(self, img):
         """
@@ -58,6 +94,11 @@ class Ocr:
 
         # get all detected blocks
         return response.text_annotations
+
+    def get_data(self, file_name, obj):
+        with open('data/{}.json'.format(file_name)) as fh:
+            data = json.load(fh)
+        return data['{}'.format(obj)]
 
     def document_text_detection(self):
         """
@@ -96,8 +137,21 @@ class Ocr:
                 print('Block Content: {}'.format(block_text))
                 print('Block Bounds:\n {}'.format(self.doc_blocks.bounding_box))
 
-    def select_roi_y(self, any_list_y):
-        self.__search_y(any_list_y)
+    def get_roi(self, annotations,dict_data,region_data):
+        for obj in annotations:
+            word = self.__spell_check(obj.description, dict_data)
+            if word is None:
+                continue
+            for element in region_data:
+                if word == element:
+                    # stores the TL y coordinate and BR y coordinat
+                    vertice = obj.bounding_poly.vertices
+                    # remove the dict for production code
+                    self.y_val[obj.description] = (vertice[0].y, vertice[2].y)
+        # remove static variables for production code
+        self.y_min = min(self.y_val.values(), key=lambda t: t[0])
+        self.y_max = max(self.y_val.values(), key=lambda t: t[1])
+        return self.image[self.y_min[0]:self.y_max[1], 0:]
 
     def search_col(self, title):
         x1 = x2 = 0
@@ -112,26 +166,14 @@ class Ocr:
         # stores the y values (min and max ) for any given data (list)
         for block in self.blocks:
             if block.description in any_list:
-                # stores the TL y coordinate and BR u coordinate
-                self.y_val[block.description] = (block.bounding_poly.vertices[0].y, block.bounding_poly.vertices[2].y)
+                # stores the TL y coordinate and BR y coordinat
+                vertice = block.bounding_poly.vertices
+                self.y_val[block.description] = (vertice[0].y, vertice[2].y)
         self.y_min = min(self.y_val.values(), key=lambda t: t[0])
         self.y_max = max(self.y_val.values(), key=lambda t: t[1])
         #
         # self.y_min = min(list(self.y_val.values()))
         # self.y_max = max(list(self.y_val.values()))
-
-    def __search_x(self, any_list):
-        for block in self.blocks:
-            if block.description in any_list:
-                # storing TL x cordinate  and
-                self.x_val[block.description] = (block.bounding_poly.vertices[0].x, block.bounding_poly.vertices[1].x)
-        # self.x_min = min(list(self.x_val.values()))
-        # self.x_max = max(list(self.x_val.values()))
-        self.x_min = min(self.x_val.values(), key=lambda t: t[0])
-        self.x_max = max(self.x_val.values(), key=lambda t: t[1])
-
-    def select_roi_x(self, any_list_x):
-        self.__search_x(any_list_x)
 
     def cropper_y(self, name):
         crop_img = self.image[self.y_min[0]:self.y_max[1], 0:]
