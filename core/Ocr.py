@@ -37,7 +37,8 @@ class Ocr:
         self.dictionary = None
         self.personal = None
         self.checker = None
-        self.rows = self.cols = {}
+        self.rows = {}
+        self.cols = {}
         self.all_text = ''
         self.contents = {}
         self.roi = []
@@ -48,7 +49,10 @@ class Ocr:
         self.blocks = self.document = self.doc_blocks = None
 
     def __cleaner(self,strs):
-        return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', strs)
+        str = ''
+        if strs.encode('utf-8').decode('ascii', 'ignore') != '':
+            str = strs
+        return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', str)
 
     def load_spellings(self,data):
         self.dictionary = DictWithPWL("en_US")
@@ -88,7 +92,7 @@ class Ocr:
         detect text from the image
         :return:
         """
-        print(self.image_path)
+        # print(self.image_path)
         # format image into google vision understandable
         with io.open(self.image_path, 'rb') as image_file:
             data = image_file.read()
@@ -98,8 +102,8 @@ class Ocr:
         self.response = Ocr.google_vision_client.text_detection(image=vision_image)
         self.annotations = self.response.text_annotations
         self.all_text = self.annotations[0].description.split('\n')
-        #print(self.all_text)
-        print('getting')
+        # print(self.all_text)
+        # print('getting')
 
 
     def get_data(self, file_name, obj):
@@ -145,10 +149,12 @@ class Ocr:
                 print('Block Bounds:\n {}'.format(self.doc_blocks.bounding_box))
 
     def get_roi(self,dict_data,region_data):
+        self.all_text = ''
         for obj in self.annotations:
             word = self.__spell_check(obj.description, dict_data)
             if word is None:
                 continue
+            self.all_text = self.all_text + word + ' '
             for element in region_data:
                 if word == 'PARTICULARS':
                     self.y_min = obj.bounding_poly.vertices[0].y
@@ -178,7 +184,7 @@ class Ocr:
         cv2.imwrite('{}.png'.format(title), crop_img)
 
     def __get_contents(self):
-        print('lol')
+        # print('lol')
         for text in self.all_text:
             # cleaned = reg_cleaner(text)
             for item in text.split(' '):
@@ -203,7 +209,7 @@ class Ocr:
                 y_min = (vertice[0][1] + vertice[3][1]) / 2
                 self.rows['line{}'.format(line)] = []
             current_y = (vertice[0][1] + vertice[3][1]) / 2
-            if (y_min - 10) <= current_y <= (y_min + 10):
+            if (y_min - 25) <= current_y <= (y_min + 25):
                 self.rows['line{}'.format(line)].append(key)
             else:
                 y_min = current_y
@@ -214,39 +220,49 @@ class Ocr:
             for element in row:
                 if 'PARTICULARS' in element:
                     self.titles = row
-                    print(row)
+                    # print(row)
                     break
-
-        return self.rows
+        # return self.rows
 
     def get_columns(self,headers_list):
+        print(self.y_min,self.y_max)
         for header in headers_list:
-            x1, x2 = self.contents[header][0][0], self.contents[header][1][0]
+            x1, x2, y1 = self.contents[header][0][0], self.contents[header][1][0], self.contents[header][2][1]
             x_mid = (x1 + x2) / 2
             self.cols[header] = []
             for key in self.contents.keys():
-                x1, x2 , y1, y2= self.contents[key][0][0], self.contents[key][1][0],self.contents[key][0][1], self.contents[key][2][1]
-
-                if x1 < x_mid < x2 and y1 >= self.y_min and y2 <= self.y_max :
+                x1, x2, y2= self.contents[key][0][0], self.contents[key][1][0], self.contents[key][2][1]
+                if x1 < x_mid < x2 and y1 != y2:
                     self.cols[header].append(key)
-
+        # print(self.cols)
+        # return self.cols
 
     def map_contents(self):
         self.get_rows()
         titles = []
-        mapped = []
+        mapped = {}
+        print(self.all_text)
         self.get_columns(self.titles)
-        for row in self.rows.values():
-            for row_element in row:
-                r = []
-                for col in self.cols.values():
-                    for col_element in col:
-                        if row_element == col_element:
-                            r.append(row_element)
-            mapped.append(r)
-        # print(self.rows)
-        print(self.cols)
-        # print(mapped)
+        for element in self.cols['PARTICULARS']:
+            y1, y2 = self.contents[element][0][1], self.contents[element][3][1]
+            y_mid = (y1+y2) / 2
+            mapped[element] = {}
+            for title in self.titles:
+                got = 0
+                if title != 'PARTICULARS':
+                    for col in self.cols[title]:
+                        y1, y2 = self.contents[col][0][1], self.contents[col][3][1]
+                        if y1 < y_mid < y2:
+                            mapped[element][title] = col
+                            got = 1
+                            break
+                    if got == 0:
+                        mapped[element][title] = None
+        print(mapped)
+
+
+
+
 
 
 
