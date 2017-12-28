@@ -16,7 +16,6 @@ uncomment the prints to come out of debugging mode
 '''
 
 
-
 class Ocr:
     """
     Ocr class
@@ -33,7 +32,6 @@ class Ocr:
         """
         # image path
         self.image_path = ''
-
         # image instance
         self.image = None
         self.dictionary = None
@@ -47,16 +45,22 @@ class Ocr:
         self.titles = []
         self.dic = None
         self.response = self.annotations = None
-        self.y_val = self.x_val = {}
         self.y_min = self.y_max = self.x_min = self.x_max = 0
-        self.blocks = self.document = self.doc_blocks = None
 
-    def __cleaner(self,strs):
+
+    @staticmethod
+    def __cleaner(st):
         print('text cleaning')
-        strs = strs.encode('ascii', 'ignore').decode('utf-8')
-        return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', strs)
+        st = st.encode('ascii', 'ignore').decode('utf-8')
+        return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', st)
 
-    def load_spellings(self,data):
+    @staticmethod
+    def get_data(file_name, obj):
+        with open('data/{}.json'.format(file_name)) as fh:
+            data = json.load(fh)
+        return data['{}'.format(obj)]
+
+    def load_spellings(self, data):
         print('spells loading')
         self.dic = data
         self.dictionary = DictWithPWL("en_US")
@@ -74,10 +78,10 @@ class Ocr:
             if self.checker.check(e_word) is False:
                 if self.personal.check(e_word) is False:
                     if self.personal.suggest(e_word) != []:
-                        print(self.personal.suggest(e_word)[0])
+                        # print(self.personal.suggest(e_word)[0])
                         for element in data:
                             if element == self.personal.suggest(e_word)[0]:
-                                print('changed')
+                                # print('changed')
                                 return element
                     return None
         else:
@@ -106,56 +110,11 @@ class Ocr:
         vision_image = types.Image(content=data)
 
         # detect text
-        self.response = Ocr.google_vision_client.text_detection(image=vision_image)
-        self.annotations = self.response.text_annotations
+        response = Ocr.google_vision_client.text_detection(image=vision_image)
+        self.annotations = response.text_annotations
         self.all_text = self.annotations[0].description.split('\n')
-        # print(self.all_text)
-        # print('getting')
 
-
-    def get_data(self, file_name, obj):
-        with open('data/{}.json'.format(file_name)) as fh:
-            data = json.load(fh)
-        return data['{}'.format(obj)]
-
-    def document_text_detection(self):
-        """
-        detect document from image
-        :return:
-        """
-        # format image into google vision understandable
-        with io.open(self.image_path, 'rb') as image_file:
-            data = image_file.read()
-        vision_image = types.Image(content=data)
-
-        # detect text
-        response = Ocr.google_vision_client.document_text_detection(image=vision_image)
-
-        # get all detected blocks
-        return response.full_text_annotation
-
-    def compute_document(self):
-        '''
-        Computes the document ocr of vision api
-        :return:
-        '''
-        for page in self.document.pages:
-            for self.doc_blocks in page.blocks:
-                block_words = []
-                for paragraph in self.doc_blocks.paragraphs:
-                    block_words.extend(paragraph.words)
-                block_symbols = []
-                for word in block_words:
-                    block_symbols.extend(word.symbols)
-
-                block_text = ''
-                for symbol in block_symbols:
-                    block_text = block_text + symbol.text
-
-                print('Block Content: {}'.format(block_text))
-                print('Block Bounds:\n {}'.format(self.doc_blocks.bounding_box))
-
-    def get_roi(self,region_data):
+    def get_roi(self, region_data):
         print('getting roi ')
         count = 0
         for obj in self.annotations:
@@ -165,35 +124,17 @@ class Ocr:
             for element in region_data:
                 if word == 'PARTICULARS':
                     self.y_min = obj.bounding_poly.vertices[0].y
-                    count = count +1
+                    count = count + 1
                 if word == element:
                     # stores the TL y coordinate and BR y coordinat
                     y = obj.bounding_poly.vertices[2].y
                     if y > self.y_max:
                         self.y_max = y
 
-                    # remove the dict for production code
-                    # self.y_val[obj.description] = (vertice[0].y, vertice[2].y)
-        # remove static variables for production code
-        # self.y_min = min(self.y_val.values(), key=lambda t: t[0])
-        #
-        # self.y_max = max(self.y_val.values(), key=lambda t: t[1])
-        #self.roi = self.image[self.y_min[0]:self.y_max[1], 0:]
-        return self.image[self.y_min-5:self.y_max+20, 0:]
-
-    def search_col(self, title):
-        x1 = x2 = 0
-        for block in self.blocks:
-            if block.description == title:
-                (x1, x2) = (block.bounding_poly.vertices[3].x, block.bounding_poly.vertices[2].x)
-                break
-        crop_img = self.image[self.y_min[0]:self.y_max[1], x1:x2]
-        cv2.imwrite('{}.png'.format(title), crop_img)
+        return self.image[self.y_min - 5:self.y_max + 20, 0:]
 
     def __get_contents(self):
         print('getting contents')
-        w_text = ''
-        c_text = ''
         for text in self.all_text:
             for item in text.split(' '):
                 if item and item != ' ':
@@ -203,14 +144,11 @@ class Ocr:
                             o_item = self.__spell_check(obj.description, self.dic)
                             if o_item:
                                 if o_item == c_item:
-                                    # c_text = c_text + c_item + ' '
                                     vertice = obj.bounding_poly.vertices
                                     self.contents[c_item] = [(vertice[0].x, vertice[0].y),
                                                              (vertice[1].x, vertice[1].y),
                                                              (vertice[2].x, vertice[2].y),
                                                              (vertice[3].x, vertice[3].y)]
-
-
 
         # print(self.contents)
 
@@ -244,15 +182,15 @@ class Ocr:
                     break
         # return self.rows
 
-    def get_columns(self,headers_list):
+    def get_columns(self, headers_list):
         print('getting cols')
-        print(self.y_min,self.y_max)
+        print(self.y_min, self.y_max)
         for header in headers_list:
             x1, x2, y1 = self.contents[header][0][0], self.contents[header][1][0], self.contents[header][2][1]
             x_mid = (x1 + x2) / 2
             self.cols[header] = []
             for key in self.contents.keys():
-                x1, x2, y2= self.contents[key][0][0], self.contents[key][1][0], self.contents[key][2][1]
+                x1, x2, y2 = self.contents[key][0][0], self.contents[key][1][0], self.contents[key][2][1]
                 if x1 < x_mid < x2 and y1 != y2:
                     self.cols[header].append(key)
         # print(self.cols)
@@ -266,7 +204,7 @@ class Ocr:
         self.get_columns(self.titles)
         for element in self.cols['PARTICULARS']:
             y1, y2 = self.contents[element][0][1], self.contents[element][3][1]
-            y_mid = (y1+y2) / 2
+            y_mid = (y1 + y2) / 2
             mapped[element] = {}
             for title in self.titles:
                 got = 0
@@ -280,19 +218,6 @@ class Ocr:
                     if got == 0:
                         mapped[element][title] = None
         print(mapped)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     # def cropper_x(self, name):
     #     crop_img = self.image[:self.y_max, self]
