@@ -43,16 +43,15 @@ class Ocr:
         self.contents = {}
         self.roi = []
         self.titles = []
+        self.dic = None
         self.response = self.annotations = None
         self.y_val = self.x_val = {}
         self.y_min = self.y_max = self.x_min = self.x_max = 0
         self.blocks = self.document = self.doc_blocks = None
 
     def __cleaner(self,strs):
-        str = ''
-        if strs.encode('utf-8').decode('ascii', 'ignore') != '':
-            str = strs
-        return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', str)
+        strs = strs.encode('ascii', 'ignore').decode('utf-8')
+        return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', strs)
 
     def load_spellings(self,data):
         self.dictionary = DictWithPWL("en_US")
@@ -149,12 +148,11 @@ class Ocr:
                 print('Block Bounds:\n {}'.format(self.doc_blocks.bounding_box))
 
     def get_roi(self,dict_data,region_data):
-        self.all_text = ''
+        self.dic = dict_data
         for obj in self.annotations:
             word = self.__spell_check(obj.description, dict_data)
             if word is None:
                 continue
-            self.all_text = self.all_text + word + ' '
             for element in region_data:
                 if word == 'PARTICULARS':
                     self.y_min = obj.bounding_poly.vertices[0].y
@@ -190,12 +188,21 @@ class Ocr:
             for item in text.split(' '):
                 if item and item != ' ':
                     for object in self.annotations:
+                        c_item = self.__spell_check(item,self.dic)
                         if object.description == item:
-                            vertice = object.bounding_poly.vertices
-                            self.contents[item] = [(vertice[0].x, vertice[0].y),
-                                              (vertice[1].x, vertice[1].y),
-                                              (vertice[2].x, vertice[2].y),
-                                              (vertice[3].x, vertice[3].y)]
+                            if c_item:
+                                vertice = object.bounding_poly.vertices
+                                self.contents[c_item] = [(vertice[0].x, vertice[0].y),
+                                                       (vertice[1].x, vertice[1].y),
+                                                       (vertice[2].x, vertice[2].y),
+                                                       (vertice[3].x, vertice[3].y)]
+                            else:
+                                vertice = object.bounding_poly.vertices
+                                self.contents[item] = [(vertice[0].x, vertice[0].y),
+                                                       (vertice[1].x, vertice[1].y),
+                                                       (vertice[2].x, vertice[2].y),
+                                                       (vertice[3].x, vertice[3].y)]
+        # return self.contents
 
     # needs get_contents return val
     def get_rows(self):
@@ -239,7 +246,6 @@ class Ocr:
 
     def map_contents(self):
         self.get_rows()
-        titles = []
         mapped = {}
         print(self.all_text)
         self.get_columns(self.titles)
