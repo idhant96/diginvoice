@@ -33,6 +33,9 @@ class Ocr:
         # image path
         self.image_path = ''
         # image instance
+        self.crop_hints = ['PRODUCTS', 'products','particulars','PARTICULARS']
+        self.index = None
+        self.o_item = []
         self.image = None
         self.dictionary = None
         self.personal = None
@@ -47,10 +50,9 @@ class Ocr:
         self.response = self.annotations = None
         self.y_min = self.y_max = self.x_min = self.x_max = 0
 
-
     @staticmethod
     def __cleaner(st):
-        print('text cleaning')
+        # print('text cleaning')
         st = st.encode('ascii', 'ignore').decode('utf-8')
         return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', st)
 
@@ -70,8 +72,8 @@ class Ocr:
         for element in data:
             self.personal.add(element)
 
-    def __spell_check(self, e_word, data):
-        print('spell checking of ', e_word)
+    def __spell_check(self, e_word):
+        # print('spell checking of ', e_word)
         e_word = self.__cleaner(e_word)
         if e_word:
             self.checker.set_text(e_word)
@@ -79,7 +81,7 @@ class Ocr:
                 if self.personal.check(e_word) is False:
                     if self.personal.suggest(e_word) != []:
                         # print(self.personal.suggest(e_word)[0])
-                        for element in data:
+                        for element in self.dic:
                             if element == self.personal.suggest(e_word)[0]:
                                 # print('changed')
                                 return element
@@ -114,34 +116,47 @@ class Ocr:
         self.annotations = response.text_annotations
         self.all_text = self.annotations[0].description.split('\n')
 
+    def annotation_iterator(self):
+        for obj in self.annotations:
+            self.o_item.append(self.__spell_check(obj.description))
+        return self.o_item
+    
     def get_roi(self, region_data):
         print('getting roi ')
-        count = 0
         for obj in self.annotations:
-            word = self.__spell_check(obj.description, self.dic)
+            word = self.__spell_check(obj.description)
             if word is None:
                 continue
             for element in region_data:
-                if word == 'PARTICULARS':
+                if any(word == x for x in self.crop_hints):
+                    # print(word)
                     self.y_min = obj.bounding_poly.vertices[0].y
-                    count = count + 1
                 if word == element:
-                    # stores the TL y coordinate and BR y coordinat
+                    # stores the TL y coordinate and BR y coordinates
                     y = obj.bounding_poly.vertices[2].y
                     if y > self.y_max:
                         self.y_max = y
-
+        # sys.exit('done')
         return self.image[self.y_min - 5:self.y_max + 20, 0:]
 
     def __get_contents(self):
         print('getting contents')
+        #this was an experiement  Why do i need all_text??
+        # for obj in self.annotations:
+        #     o_item = self.__spell_check(obj.description,self.dic)
+        #     if o_item:
+        #         vertice = obj.bounding_poly.vertices
+        #         self.contents[o_item] = [(vertice[0].x, vertice[0].y),
+        #                                  (vertice[1].x, vertice[1].y),
+        #                                  (vertice[2].x, vertice[2].y),
+        #                                  (vertice[3].x, vertice[3].y)]
         for text in self.all_text:
             for item in text.split(' '):
                 if item and item != ' ':
-                    c_item = self.__spell_check(item, self.dic)
+                    c_item = self.__spell_check(item)
                     if c_item:
                         for obj in self.annotations:
-                            o_item = self.__spell_check(obj.description, self.dic)
+                            o_item = self.__spell_check(obj.description)
                             if o_item:
                                 if o_item == c_item:
                                     vertice = obj.bounding_poly.vertices
@@ -151,7 +166,6 @@ class Ocr:
                                                              (vertice[3].x, vertice[3].y)]
 
         # print(self.contents)
-
         # sys.exit()
 
     # needs get_contents return val
@@ -176,11 +190,11 @@ class Ocr:
                 self.rows['line{}'.format(line)].append(key)
         for row in self.rows.values():
             for element in row:
-                if 'PARTICULARS' in element:
+                if any(element == x for x in self.crop_hints):
                     self.titles = row
                     # print(row)
                     break
-        # return self.rows
+        print(self.rows)
 
     def get_columns(self, headers_list):
         print('getting cols')
@@ -193,22 +207,34 @@ class Ocr:
                 x1, x2, y2 = self.contents[key][0][0], self.contents[key][1][0], self.contents[key][2][1]
                 if x1 < x_mid < x2 and y1 != y2:
                     self.cols[header].append(key)
-        # print(self.cols)
+        print(self.cols)
         # return self.cols
+
+    def get_index(self):
+        for x in self.crop_hints:
+            for title in self.titles:
+                if x == title:
+                    self.index = x
+                    break
 
     def map_contents(self):
         print('mapping contents')
         self.get_rows()
         mapped = {}
-        print(self.all_text)
+        # print(self.all_text)
         self.get_columns(self.titles)
-        for element in self.cols['PARTICULARS']:
+        for x in self.crop_hints:
+            for title in self.titles:
+                if x == title:
+                    self.index = x
+                    break
+        for element in self.cols[self.index]:
             y1, y2 = self.contents[element][0][1], self.contents[element][3][1]
             y_mid = (y1 + y2) / 2
             mapped[element] = {}
             for title in self.titles:
                 got = 0
-                if title != 'PARTICULARS':
+                if title != self.index:
                     for col in self.cols[title]:
                         y1, y2 = self.contents[col][0][1], self.contents[col][3][1]
                         if y1 < y_mid < y2:
