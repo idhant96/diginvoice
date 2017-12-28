@@ -7,10 +7,12 @@ import cv2
 from google.cloud import vision
 from google.cloud.vision import types
 import re
-import numpy as np
+import sys
 
 '''
+to Jay Sir
 Functions needs to be distributed
+uncomment the prints to come out of debugging mode
 '''
 
 
@@ -50,10 +52,13 @@ class Ocr:
         self.blocks = self.document = self.doc_blocks = None
 
     def __cleaner(self,strs):
+        print('text cleaning')
         strs = strs.encode('ascii', 'ignore').decode('utf-8')
         return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', strs)
 
     def load_spellings(self,data):
+        print('spells loading')
+        self.dic = data
         self.dictionary = DictWithPWL("en_US")
         self.checker = SpellChecker(self.dictionary)
         self.personal = enchant.Dict()
@@ -62,14 +67,17 @@ class Ocr:
             self.personal.add(element)
 
     def __spell_check(self, e_word, data):
+        print('spell checking of ', e_word)
         e_word = self.__cleaner(e_word)
         if e_word:
             self.checker.set_text(e_word)
             if self.checker.check(e_word) is False:
                 if self.personal.check(e_word) is False:
                     if self.personal.suggest(e_word) != []:
+                        print(self.personal.suggest(e_word)[0])
                         for element in data:
                             if element == self.personal.suggest(e_word)[0]:
+                                print('changed')
                                 return element
                     return None
         else:
@@ -147,16 +155,17 @@ class Ocr:
                 print('Block Content: {}'.format(block_text))
                 print('Block Bounds:\n {}'.format(self.doc_blocks.bounding_box))
 
-    def get_roi(self,dict_data,region_data):
-        self.dic = dict_data
+    def get_roi(self,region_data):
+        print('getting roi ')
+        count = 0
         for obj in self.annotations:
-            word = self.__spell_check(obj.description, dict_data)
+            word = self.__spell_check(obj.description, self.dic)
             if word is None:
                 continue
             for element in region_data:
                 if word == 'PARTICULARS':
                     self.y_min = obj.bounding_poly.vertices[0].y
-
+                    count = count +1
                 if word == element:
                     # stores the TL y coordinate and BR y coordinat
                     y = obj.bounding_poly.vertices[2].y
@@ -182,30 +191,34 @@ class Ocr:
         cv2.imwrite('{}.png'.format(title), crop_img)
 
     def __get_contents(self):
-        # print('lol')
+        print('getting contents')
+        w_text = ''
+        c_text = ''
         for text in self.all_text:
-            # cleaned = reg_cleaner(text)
             for item in text.split(' '):
                 if item and item != ' ':
-                    for object in self.annotations:
-                        c_item = self.__spell_check(item,self.dic)
-                        if object.description == item:
-                            if c_item:
-                                vertice = object.bounding_poly.vertices
-                                self.contents[c_item] = [(vertice[0].x, vertice[0].y),
-                                                       (vertice[1].x, vertice[1].y),
-                                                       (vertice[2].x, vertice[2].y),
-                                                       (vertice[3].x, vertice[3].y)]
-                            else:
-                                vertice = object.bounding_poly.vertices
-                                self.contents[item] = [(vertice[0].x, vertice[0].y),
-                                                       (vertice[1].x, vertice[1].y),
-                                                       (vertice[2].x, vertice[2].y),
-                                                       (vertice[3].x, vertice[3].y)]
-        # return self.contents
+                    c_item = self.__spell_check(item, self.dic)
+                    if c_item:
+                        for obj in self.annotations:
+                            o_item = self.__spell_check(obj.description, self.dic)
+                            if o_item:
+                                if o_item == c_item:
+                                    # c_text = c_text + c_item + ' '
+                                    vertice = obj.bounding_poly.vertices
+                                    self.contents[c_item] = [(vertice[0].x, vertice[0].y),
+                                                             (vertice[1].x, vertice[1].y),
+                                                             (vertice[2].x, vertice[2].y),
+                                                             (vertice[3].x, vertice[3].y)]
+
+
+
+        # print(self.contents)
+
+        # sys.exit()
 
     # needs get_contents return val
     def get_rows(self):
+        print('getting rows')
         self.__get_contents()
         y_min = 0
         line = 1
@@ -232,6 +245,7 @@ class Ocr:
         # return self.rows
 
     def get_columns(self,headers_list):
+        print('getting cols')
         print(self.y_min,self.y_max)
         for header in headers_list:
             x1, x2, y1 = self.contents[header][0][0], self.contents[header][1][0], self.contents[header][2][1]
@@ -245,6 +259,7 @@ class Ocr:
         # return self.cols
 
     def map_contents(self):
+        print('mapping contents')
         self.get_rows()
         mapped = {}
         print(self.all_text)
