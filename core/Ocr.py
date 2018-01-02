@@ -7,7 +7,6 @@ import cv2
 from google.cloud import vision
 from google.cloud.vision import types
 import re
-import sys
 
 '''
 to Jay Sir
@@ -33,7 +32,7 @@ class Ocr:
         # image path
         self.image_path = ''
         # image instance
-        self.crop_hints = ['PRODUCTS', 'products','particulars','PARTICULARS']
+        self.crop_hints = ['PRODUCTS','Particulars','PARTICULARS', 'PRODUCT']
         self.index = None
         self.o_item = []
         self.image = None
@@ -49,6 +48,15 @@ class Ocr:
         self.dic = None
         self.response = self.annotations = None
         self.y_min = self.y_max = self.x_min = self.x_max = 0
+        self.text_props = {}
+
+    @staticmethod
+    def __resize(image):
+        r = 400.0 / image.shape[1]
+        dim = (300, int(image.shape[0] * r))
+        # perform the actual resizing of the image and show it
+        resized = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
+        return resized
 
     @staticmethod
     def __cleaner(st):
@@ -98,7 +106,10 @@ class Ocr:
         """
         self.image_path = '{}'.format(img)
         # set image instance
-        self.image = cv2.imread(self.image_path)
+        self.image = cv2.imread(self.image_path,0)
+        # self.image = cv2.adaptiveThreshold(self.image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
+                                    # cv2.THRESH_BINARY, 11, 2)
+        # self.image = self.__resize(self.image)
 
     def text_detection(self):
         """
@@ -115,25 +126,43 @@ class Ocr:
         response = Ocr.google_vision_client.text_detection(image=vision_image)
         self.annotations = response.text_annotations
         self.all_text = self.annotations[0].description.split('\n')
+        # print(self.all_text)
 
-    def annotation_iterator(self):
+    def get_props(self):
+        times = 1
+        # print(self.all_text)
         for obj in self.annotations:
-            self.o_item.append(self.__spell_check(obj.description))
-        return self.o_item
-    
+            text = self.__spell_check(obj.description)
+            if text:
+                if text in self.text_props.keys():
+                    while True:
+                        times = times + 1
+                        added = text + '({})'.format(times)
+                        if added not in self.text_props.keys():
+                            self.text_props[added] = obj.bounding_poly.vertices
+                            times = 1
+                            break
+                else:
+                    self.text_props[text] = obj.bounding_poly.vertices
+        print(self.text_props)
+
+
+        # return self.text_props
+
     def get_roi(self, region_data):
         print('getting roi ')
-        for obj in self.annotations:
-            word = self.__spell_check(obj.description)
-            if word is None:
-                continue
+        print(self.all_text)
+        for text in self.text_props.keys():
+            text = self.__spell_check(text)
+            print(text)
             for element in region_data:
-                if any(word == x for x in self.crop_hints):
-                    # print(word)
-                    self.y_min = obj.bounding_poly.vertices[0].y
-                if word == element:
+                if any(text == x for x in self.crop_hints):
+                    print(text)
+                    self.y_min = self.text_props[text][0].y
+                if text == element:
                     # stores the TL y coordinate and BR y coordinates
-                    y = obj.bounding_poly.vertices[2].y
+                    print('smmmm')
+                    y = self.text_props[text][2].y
                     if y > self.y_max:
                         self.y_max = y
         # sys.exit('done')
@@ -141,15 +170,6 @@ class Ocr:
 
     def __get_contents(self):
         print('getting contents')
-        #this was an experiement  Why do i need all_text??
-        # for obj in self.annotations:
-        #     o_item = self.__spell_check(obj.description,self.dic)
-        #     if o_item:
-        #         vertice = obj.bounding_poly.vertices
-        #         self.contents[o_item] = [(vertice[0].x, vertice[0].y),
-        #                                  (vertice[1].x, vertice[1].y),
-        #                                  (vertice[2].x, vertice[2].y),
-        #                                  (vertice[3].x, vertice[3].y)]
         for text in self.all_text:
             for item in text.split(' '):
                 if item and item != ' ':
@@ -181,7 +201,7 @@ class Ocr:
                 y_min = (vertice[0][1] + vertice[3][1]) / 2
                 self.rows['line{}'.format(line)] = []
             current_y = (vertice[0][1] + vertice[3][1]) / 2
-            if (y_min - 25) <= current_y <= (y_min + 25):
+            if (y_min - 40) <= current_y <= (y_min + 40):
                 self.rows['line{}'.format(line)].append(key)
             else:
                 y_min = current_y
@@ -192,21 +212,35 @@ class Ocr:
             for element in row:
                 if any(element == x for x in self.crop_hints):
                     self.titles = row
-                    # print(row)
+                    print('special row', row)
                     break
-        print(self.rows)
+        # print('rowwwwwwsss')
+        # print(self.rows)
 
     def get_columns(self, headers_list):
         print('getting cols')
         print(self.y_min, self.y_max)
         for header in headers_list:
+            times = 0
             x1, x2, y1 = self.contents[header][0][0], self.contents[header][1][0], self.contents[header][2][1]
             x_mid = (x1 + x2) / 2
-            self.cols[header] = []
+            if header in self.cols.keys():
+                print('entered')
+                while True:
+                    print(times)
+                    times = times + 1
+                    header = header + '({})'.format(times)
+                    if header not in self.cols.keys():
+                        self.cols[header] = []
+                        break
+            else:
+                print('not entered')
+                self.cols[header] = []
             for key in self.contents.keys():
                 x1, x2, y2 = self.contents[key][0][0], self.contents[key][1][0], self.contents[key][2][1]
                 if x1 < x_mid < x2 and y1 != y2:
                     self.cols[header].append(key)
+        print('columns')
         print(self.cols)
         # return self.cols
 
@@ -223,11 +257,15 @@ class Ocr:
         mapped = {}
         # print(self.all_text)
         self.get_columns(self.titles)
+        print('all text')
+        print(self.all_text)
+        # sys.exit('done')
         for x in self.crop_hints:
             for title in self.titles:
                 if x == title:
                     self.index = x
                     break
+        print('index', self.index)
         for element in self.cols[self.index]:
             y1, y2 = self.contents[element][0][1], self.contents[element][3][1]
             y_mid = (y1 + y2) / 2
