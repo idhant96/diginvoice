@@ -7,6 +7,7 @@ import cv2
 from google.cloud import vision
 from google.cloud.vision import types
 import re
+import sys
 
 '''
 to Jay Sir
@@ -129,40 +130,46 @@ class Ocr:
         # print(self.all_text)
 
     def get_props(self):
+        self.text_props = {}
         times = 1
-        # print(self.all_text)
+        print(self.all_text)
         for obj in self.annotations:
             text = self.__spell_check(obj.description)
+            vertice = obj.bounding_poly.vertices
             if text:
                 if text in self.text_props.keys():
                     while True:
                         times = times + 1
                         added = text + '({})'.format(times)
                         if added not in self.text_props.keys():
-                            self.text_props[added] = obj.bounding_poly.vertices
+                            self.text_props[added] = [(vertice[0].x, vertice[0].y),
+                                                             (vertice[1].x, vertice[1].y),
+                                                             (vertice[2].x, vertice[2].y),
+                                                             (vertice[3].x, vertice[3].y)]
                             times = 1
                             break
                 else:
-                    self.text_props[text] = obj.bounding_poly.vertices
-        print(self.text_props)
-
-
+                    self.text_props[text] = [(vertice[0].x, vertice[0].y),
+                                                             (vertice[1].x, vertice[1].y),
+                                                             (vertice[2].x, vertice[2].y),
+                                                             (vertice[3].x, vertice[3].y)]
+        # print(self.text_props)
         # return self.text_props
 
     def get_roi(self, region_data):
         print('getting roi ')
-        print(self.all_text)
+        print(self.text_props)
         for text in self.text_props.keys():
             text = self.__spell_check(text)
-            print(text)
+            # print(text)
             for element in region_data:
                 if any(text == x for x in self.crop_hints):
-                    print(text)
-                    self.y_min = self.text_props[text][0].y
+                    # print(text)
+                    self.y_min = self.text_props[text][0][1]
                 if text == element:
                     # stores the TL y coordinate and BR y coordinates
-                    print('smmmm')
-                    y = self.text_props[text][2].y
+                    # print('smmmm')
+                    y = self.text_props[text][2][1]
                     if y > self.y_max:
                         self.y_max = y
         # sys.exit('done')
@@ -191,12 +198,13 @@ class Ocr:
     # needs get_contents return val
     def get_rows(self):
         print('getting rows')
-        self.__get_contents()
+        # self.__get_contents()
         y_min = 0
         line = 1
         self.titles = []
-        for key in self.contents.keys():
-            vertice = self.contents[key]
+        for key in self.text_props.keys():
+            vertice = self.text_props[key]
+            # print(vertice)
             if y_min == 0:
                 y_min = (vertice[0][1] + vertice[3][1]) / 2
                 self.rows['line{}'.format(line)] = []
@@ -217,29 +225,33 @@ class Ocr:
         # print('rowwwwwwsss')
         # print(self.rows)
 
-    def get_columns(self, headers_list):
+    def get_columns(self):
         print('getting cols')
-        print(self.y_min, self.y_max)
-        for header in headers_list:
-            times = 0
-            x1, x2, y1 = self.contents[header][0][0], self.contents[header][1][0], self.contents[header][2][1]
+        # print(self.y_min, self.y_max)
+        print(self.titles)
+        for header in self.titles:
+            props = self.text_props[header]
+            x1, x2, y1 = props[0][0], props[1][0], props[2][1]
             x_mid = (x1 + x2) / 2
-            if header in self.cols.keys():
-                print('entered')
-                while True:
-                    print(times)
-                    times = times + 1
-                    header = header + '({})'.format(times)
-                    if header not in self.cols.keys():
-                        self.cols[header] = []
-                        break
-            else:
-                print('not entered')
-                self.cols[header] = []
-            for key in self.contents.keys():
-                x1, x2, y2 = self.contents[key][0][0], self.contents[key][1][0], self.contents[key][2][1]
+            self.cols[header] = []
+            for key in self.text_props.keys():
+                x_key = key
+                if '(' in key:
+                    x_key = key[0:key.index('(')]
+                # print(key)
+                props = self.text_props[x_key]
+                x1, x2, y2 = props[0][0], props[1][0],props[2][1]
                 if x1 < x_mid < x2 and y1 != y2:
                     self.cols[header].append(key)
+        # for header in headers_list:
+        #     times = 0
+        #     x1, x2, y1 = self.contents[header][0][0], self.contents[header][1][0], self.contents[header][2][1]
+        #     x_mid = (x1 + x2) / 2
+        #     self.cols[header] = []
+        #     for key in self.contents.keys():
+        #         x1, x2, y2 = self.contents[key][0][0], self.contents[key][1][0], self.contents[key][2][1]
+        #         if x1 < x_mid < x2 and y1 != y2:
+        #             self.cols[header].append(key)
         print('columns')
         print(self.cols)
         # return self.cols
@@ -253,10 +265,11 @@ class Ocr:
 
     def map_contents(self):
         print('mapping contents')
-        self.get_rows()
+        # self.get_rows()
         mapped = {}
         # print(self.all_text)
-        self.get_columns(self.titles)
+        # self.get_columns(self.titles)
+        # sys.exit('done')
         print('all text')
         print(self.all_text)
         # sys.exit('done')
@@ -267,14 +280,16 @@ class Ocr:
                     break
         print('index', self.index)
         for element in self.cols[self.index]:
-            y1, y2 = self.contents[element][0][1], self.contents[element][3][1]
+            props = self.text_props[element]
+            y1, y2 = props[0][1], props[3][1]
             y_mid = (y1 + y2) / 2
             mapped[element] = {}
             for title in self.titles:
                 got = 0
                 if title != self.index:
                     for col in self.cols[title]:
-                        y1, y2 = self.contents[col][0][1], self.contents[col][3][1]
+                        props = self.text_props[col]
+                        y1, y2 = props[0][1], props[3][1]
                         if y1 < y_mid < y2:
                             mapped[element][title] = col
                             got = 1
