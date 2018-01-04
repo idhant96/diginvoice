@@ -90,10 +90,10 @@ class Ocr:
                 if self.personal.check(e_word) is False:
                     if self.personal.suggest(e_word) != []:
                         # print(self.personal.suggest(e_word)[0])
-                        for element in self.dic:
-                            if element == self.personal.suggest(e_word)[0]:
-                                # print('changed')
-                                return element
+                        for suggest in self.personal.suggest(e_word):
+                            for element in self.dic:
+                                if suggest == element:
+                                    return element
                     return None
         else:
             return None
@@ -241,7 +241,7 @@ class Ocr:
                 # print(key)
                 props = self.text_props[x_key]
                 x1, x2, y2 = props[0][0], props[1][0],props[2][1]
-                if x1 < x_mid < x2 and y1 != y2:
+                if x1-40 < x_mid < x2+40 and y1 != y2:
                     self.cols[header].append(key)
         # for header in headers_list:
         #     times = 0
