@@ -63,7 +63,7 @@ class Ocr:
     def __cleaner(st):
         # print('text cleaning')
         st = st.encode('ascii', 'ignore').decode('utf-8')
-        return re.sub(r'[(?|$|,+''"”*#.:|!)]', r'', st)
+        return re.sub(r'[(?|$|,+''"”*#:|!)]', r'', st)
 
     @staticmethod
     def get_data(file_name, obj):
@@ -83,6 +83,8 @@ class Ocr:
 
     def __spell_check(self, e_word):
         # print('spell checking of ', e_word)
+        if e_word == '.':
+            return None
         e_word = self.__cleaner(e_word)
         if e_word:
             self.checker.set_text(e_word)
@@ -108,8 +110,8 @@ class Ocr:
         self.image_path = '{}'.format(img)
         # set image instance
         self.image = cv2.imread(self.image_path,0)
-        # self.image = cv2.adaptiveThreshold(self.image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, \
-                                    # cv2.THRESH_BINARY, 11, 2)
+        # self.image =  cv2.adaptiveThreshold(self.image,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
+        #     cv2.THRESH_BINARY,21,7)
         # self.image = self.__resize(self.image)
 
     def text_detection(self):
@@ -222,8 +224,8 @@ class Ocr:
                     self.titles = row
                     print('special row', row)
                     break
-        # print('rowwwwwwsss')
-        # print(self.rows)
+        print('rowwwwwwsss')
+        print(self.rows)
 
     def get_columns(self):
         print('getting cols')
@@ -296,7 +298,9 @@ class Ocr:
                             break
                     if got == 0:
                         mapped[element][title] = None
-        print(mapped)
+        for key in mapped.keys():
+            print(key)
+            print(mapped[key])
 
     # def cropper_x(self, name):
     #     crop_img = self.image[:self.y_max, self]
