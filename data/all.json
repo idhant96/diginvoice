@@ -24,6 +24,7 @@
     "PACKING",
     "PCK",
     "PTS",
+    "HSN",
     "PACK",
     "Op Bal Qty",
     "Quantity",
@@ -39,10 +40,14 @@
     "MF NAME",
     "BATCH",
     "EXP",
-    "MRP.",
+    "MRP",
+    "RATE",
     "PTR",
     "GST",
     "DIS",
-    "AMOUNT"
+    "AMOUNT",
+    "Mfo",
+    "TXB AMT",
+    "CGST SGST"
   ]
 }
