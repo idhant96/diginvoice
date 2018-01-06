@@ -38,16 +38,26 @@
     "QTY FR",
     "PARTICULARS",
     "MF NAME",
+    "Name",
     "BATCH",
     "EXP",
     "MRP",
     "RATE",
     "PTR",
     "GST",
+    "GstDis",
     "DIS",
     "AMOUNT",
     "Mfo",
     "TXB AMT",
-    "CGST SGST"
+    "CGST SGST",
+    "LIV",
+    "AKNAYBAR",
+    "RITCH",
+    "OXETOL",
+    "ARG",
+    "MGGR",
+    "LOC"
+
   ]
 }

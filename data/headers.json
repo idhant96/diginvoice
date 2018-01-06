@@ -1,6 +1,7 @@
 {
   "table": [
     "PRODUCT",
+    "DISCRIPTION",
     "PRD",
     "PACKING",
     "PCK",
@@ -9,6 +10,8 @@
     "Quantity",
     "Receipt",
     "Qty",
+    "QTY",
+    "FREE",
     "Total",
     "Issue",
     "Closing",

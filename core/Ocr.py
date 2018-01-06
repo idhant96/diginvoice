@@ -7,6 +7,7 @@ import cv2
 from google.cloud import vision
 from google.cloud.vision import types
 import re
+import os
 import sys
 
 '''
@@ -33,7 +34,8 @@ class Ocr:
         # image path
         self.image_path = ''
         # image instance
-        self.crop_hints = ['PRODUCTS','Particulars','PARTICULARS', 'PRODUCT']
+        self.crop_hints = ['PRODUCTS','Particulars','PARTICULARS', 'DESCRIPTION', 'PRODUCT',
+                           ]
         self.index = None
         self.o_item = []
         self.image = None
@@ -175,6 +177,7 @@ class Ocr:
                     if y > self.y_max:
                         self.y_max = y
         # sys.exit('done')
+        print(self.y_max,self.y_min)
         return self.image[self.y_min - 5:self.y_max + 20, 0:]
 
     def __get_contents(self):
@@ -211,7 +214,7 @@ class Ocr:
                 y_min = (vertice[0][1] + vertice[3][1]) / 2
                 self.rows['line{}'.format(line)] = []
             current_y = (vertice[0][1] + vertice[3][1]) / 2
-            if (y_min - 40) <= current_y <= (y_min + 40):
+            if (y_min - 10) <= current_y <= (y_min + 10):
                 self.rows['line{}'.format(line)].append(key)
             else:
                 y_min = current_y
@@ -243,7 +246,7 @@ class Ocr:
                 # print(key)
                 props = self.text_props[x_key]
                 x1, x2, y2 = props[0][0], props[1][0],props[2][1]
-                if x1-40 < x_mid < x2+40 and y1 != y2:
+                if x1-20 < x_mid < x2+20 and y1 != y2:
                     self.cols[header].append(key)
         # for header in headers_list:
         #     times = 0
@@ -301,6 +304,49 @@ class Ocr:
         for key in mapped.keys():
             print(key)
             print(mapped[key])
+
+    def lol(self,directory):
+        paths = []
+        for root, _, files in os.walk("{}".format(directory)):
+            for file in files:
+                if file.endswith(".jpg"):
+                    paths.append(os.path.join(root, file))
+        print(paths)
+        results = {}
+        results['invoices'] = {}
+        for path in paths:
+            self.set_image(path)
+            # print(path)
+            self.text_detection()
+            result = results['invoices'][path] = {}
+            dlno = result['DLNO'] = {}
+            gstin = result['GSTIN'] = {}
+            date = result['INV DATE'] = {}
+            for text in self.all_text:
+                if re.findall(r'^DL.NO.(.*)', text):
+                    dl = ''.join(re.findall(r'^DL.NO.(.*)', text)).strip()
+                    # print(dl)
+                    if re.findall(r'^DL.NO.([A-Z]{3}.\d{2}.\d{2}A$)',text):
+                        dlno[dl] = True
+                    else:
+                        dlno[dl] = False
+                elif re.findall(r'^GSTIN.(.*)', text):
+                    gst = ''.join(re.findall(r'^GSTIN.(.*)', text)).strip()
+                    # print(gst)
+                    if re.findall(r'^GSTIN.(\d{2}[A-Z]{5}\d{4}[A-Z]\d[Z]\w)', text):
+                        gstin[gst] = True
+                    else:
+                        gstin[gst] = False
+                elif re.findall(r'^INV.DATE.(.*)', text):
+                    d = ''.join(re.findall(r'^INV.DATE.(.*)', text)).strip()
+                    # print(d)
+                    if re.findall(r'^INV.DATE.(\d+.\d+.\d+)', text):
+                        date[d] = True
+                    else:
+                        date[d] = False
+        print(results)
+
+
 
     # def cropper_x(self, name):
     #     crop_img = self.image[:self.y_max, self]
