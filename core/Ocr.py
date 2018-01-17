@@ -13,7 +13,6 @@ import sys
 '''
 to Jay Sir
 Functions needs to be distributed
-uncomment the prints to come out of debugging mode
 '''
 
 
@@ -36,6 +35,7 @@ class Ocr:
         # image instance
         self.crop_hints = ['PRODUCTS','Particulars','PARTICULARS', 'DESCRIPTION', 'PRODUCT',
                            ]
+        self.blocks = []
         self.index = None
         self.o_item = []
         self.image = None
@@ -44,7 +44,7 @@ class Ocr:
         self.checker = None
         self.rows = {}
         self.cols = {}
-        self.all_text = ''
+        self.all_text = []
         self.contents = {}
         self.roi = []
         self.titles = []
@@ -112,9 +112,27 @@ class Ocr:
         self.image_path = '{}'.format(img)
         # set image instance
         self.image = cv2.imread(self.image_path,0)
-        # self.image =  cv2.adaptiveThreshold(self.image,255,cv2.ADAPTIVE_THRESH_MEAN_C,\
-        #     cv2.THRESH_BINARY,21,7)
-        # self.image = self.__resize(self.image)
+
+    def document_detection(self):
+        with io.open(self.image_path, 'rb') as image_file:
+            data = image_file.read()
+        vision_image = types.Image(content=data)
+        response = Ocr.google_vision_client.document_text_detection(image=vision_image)
+        self.annotations = response.full_text_annotation
+        for page in self.annotations.pages:
+            for block in page.blocks:
+                block_words = []
+                for paragraph in block.paragraphs:
+                    block_words.extend(paragraph.words)
+                block_symbols = []
+                for word in block_words:
+                    block_symbols.extend(word.symbols)
+                block_text = ''
+                for symbol in block_symbols:
+                    block_text = block_text + symbol.text
+                self.blocks.append(block_text)
+        # print(self.blocks)
+                # print('Block Bounds:\n {}'.format(block.bounding_box))
 
     def text_detection(self):
         """
@@ -131,7 +149,7 @@ class Ocr:
         response = Ocr.google_vision_client.text_detection(image=vision_image)
         self.annotations = response.text_annotations
         self.all_text = self.annotations[0].description.split('\n')
-        # print(self.all_text)
+        # print(block_words)
 
     def get_props(self):
         self.text_props = {}
@@ -305,46 +323,274 @@ class Ocr:
             print(key)
             print(mapped[key])
 
-    def lol(self,directory):
+    @staticmethod
+    def to_digits(characters):
+        final = ''
+        for character in characters:
+            if character.islower():
+                character = character.upper()
+            if character.isdigit():
+                final = final + character
+            elif character == 'B':
+                final = final + '8'
+            elif character == 'S':
+                final = final + '5'
+            elif character == 'O':
+                final = final + '0'
+            elif character == 'I':
+                final = final + '1'
+            elif character == 'Z':
+                final = final + '2'
+            else:
+                final = final + character
+        return final
+
+    @staticmethod
+    def to_alphabets(numbers):
+        final = ''
+        for number in numbers:
+            if number.isalpha():
+                final = final + number
+            elif number == '1':
+                final = final + 'I'
+            elif number == '2':
+                final = final + 'Z'
+            elif number == '5':
+                final = final + 'S'
+            elif number == '8':
+                final = final + 'B'
+            elif number == '0':
+                final = final + 'O'
+            else:
+                final = final + number
+        return final
+
+    def add_missing_gst(self):
+        # fifth, first, second, third, fourth, sixth, seventh, eigth, final, e = '', '', '', '', '', '', '', '', '', ''
+        final, e, subtext = '', '',''
+        self.document_detection()
+        # self.blocks = []
+        # self.blocks.append('GSTIN10BSKPB2548B1ZI')
+        for text in self.blocks:
+            text = text.replace('.', '')
+            text = text.replace(' ', '')
+            text = text.replace('!', '')
+            text = text.replace(':','')
+            if re.findall(r'GSTIN(.{15})', text):
+                text = text.strip()
+                print('lol text', text)
+                final = ''
+                subtext = ''.join(re.findall(r'GSTIN(.{15})', text))
+                subpart = subtext[0:2]
+                if not subpart.isdigit():
+                    final = final + self.to_digits(subpart)
+                else:
+                    final = final + subpart
+                subpart = subtext[2:7]
+                if not subpart.isalpha():
+                    final = final + self.to_alphabets(subpart)
+                else:
+                    final = final + subpart
+                subpart = subtext[7:11]
+                if not subpart.isdigit():
+                    final = final + self.to_digits(subpart)
+                else:
+                    final = final + subpart
+                subpart = subtext[11]
+                if not subpart.isalpha():
+                    final = final + self.to_alphabets(subpart)
+                else:
+                    final = final + subpart
+                subpart = subtext[12]
+                if not subpart.isdigit():
+                    final = final + self.to_digits(subpart)
+                else:
+                    final = final + subpart
+                subpart = subtext[13]
+                if subpart is not 'Z':
+                    final = final + 'Z'
+                else:
+                    final = final + subpart
+                final = final + subtext[14]
+                print(final)
+
+
+
+
+
+
+
+
+
+
+
+
+
+                #
+                #
+                #
+                # #first 15
+                # subtext = ''.join(re.findall(r'GSTIN(.{15})', text))
+                # print('15 ', subtext)
+                # e = ''.join(re.findall(r'(\d{2})', subtext))
+                # print('lol', e)
+                # if e is '':
+                #     final = final + self.to_digits(subtext[0:2])
+                #     subtext = subtext.replace(subtext[0:2], self.to_digits(subtext[0:2]))
+                #     print('in ', subtext)
+                # else:
+                #     final = final + e
+                # subtext = ''.join(re.findall(r'\d{2}(.*)', subtext))
+                # print('13 ', subtext)
+                # e = ''.join(re.findall(r'([A-Z]{5})', subtext))
+                # if e is '':
+                #     final = final + self.to_alphabets(subtext[0:6])
+                # else:
+                #     final = final + e
+                # subtext = ''.join(re.findall(r'[A-Z]{5}(.*)',subtext))
+                # print(subtext)
+                # e = ''.join(re.findall(r'\d{4}', subtext))
+                # if e is '':
+                #     final = final + self.to_digits(subtext[0:5])
+                # else:
+                #     final = final + e
+                # subtext = ''.join(re.findall(r'\d{4}(.*)', subtext))
+                # print(subtext)
+                # e = ''.join(re.findall(r'[A-Z]', subtext))
+                # if e is '':
+                #     final = final + self.to_alphabets(subtext[0])
+                # else:
+                #     final = final + e
+                # subtext = ''.join(re.findall(r'[A-Z](.*)', subtext))
+                # e = ''.join(re.findall(r'\d', subtext))
+                # if e is '':
+                #     final = final + self.to_digits(subtext[0])
+                # else:
+                #     final = final + e
+                # subtext = ''.join(re.findall(r'\d(.*)', subtext))
+                # e = ''.join(re.findall(r'[Z]', subtext))
+                # if e is '':
+                #     final = final + self.to_alphabets(subtext[0])
+                # else:
+                #     final = final + e
+                # final = final + subtext[1]
+                # print(final)
+                #
+
+
+
+
+
+
+
+                #
+                #
+                #
+                #     second = ''.join(re.findall(r'\d{2}(.{13})', first))
+                #     if second:
+                #         print(second)
+                #         e, third = ''.join(re.findall(r'([A-Z]{5})(.{8})', second))
+                #         if third:
+                #             print(third)
+                #             e, fourth = ''.join(re.findall(r'(\d{4})(.{4})', third))
+                #             if fourth:
+                #                 print(fourth)
+                #                 e, fifth = ''.join(re.findall(r'([A-Z])(.{3})', fourth))
+                #                 if fifth:
+                #                     print(fifth)
+                #                     e, sixth = ''.join(re.findall(r'(\d)(.{2})', fifth))
+                #                     if sixth:
+                #                         print(sixth)
+                #                         e, seventh = ''.join(re.findall(r'[Z](.)', sixth))
+                #                         if seventh:
+                #                             print(seventh)
+                #                             eigth = ''.join(re.findall(r'\d', seventh))
+                #                             if eigth:
+                #                                 final = final + first + second + third + fourth + fifth + sixth + seventh + eigth
+                #                                 break
+                #                         else:
+                #                             # change it to Z
+                #                             pass
+                #                     else:
+                #                         # change somehting to number
+                #                         self.to_digits(e)
+                #                 else:
+                #                     # change something to alphabets
+                #                     self.to_alphabets(e)
+                #             else:
+                #                 # change somehting to digits
+                #                 self.to_digits(e)
+                #         else:
+                #             self.to_alphabets(e)
+                #             # change something to alphabets
+                # else:
+                #     second.replace(e, self.to_digits(e))
+
+    def lol(self, directory):
         paths = []
         for root, _, files in os.walk("{}".format(directory)):
             for file in files:
                 if file.endswith(".jpg"):
                     paths.append(os.path.join(root, file))
-        print(paths)
+        # print(paths)
         results = {}
         results['invoices'] = {}
         for path in paths:
+            input('process {}?'.format(path))
             self.set_image(path)
             # print(path)
             self.text_detection()
+            print(self.all_text)
             result = results['invoices'][path] = {}
             dlno = result['DLNO'] = {}
             gstin = result['GSTIN'] = {}
             date = result['INV DATE'] = {}
             for text in self.all_text:
-                if re.findall(r'^DL.NO.(.*)', text):
-                    dl = ''.join(re.findall(r'^DL.NO.(.*)', text)).strip()
-                    # print(dl)
-                    if re.findall(r'^DL.NO.([A-Z]{3}.\d{2}.\d{2}A$)',text):
-                        dlno[dl] = True
-                    else:
-                        dlno[dl] = False
+                # for word in text.split(' '):
+                #     correct = self.__spell_check(word)
+                #     print('reachewd')
+                #     if correct and correct != word:
+                #         print('reached 2')
+                #         self.all_text[self.all_text.index(text)] = text.replace(word, correct)
+
+                    # word = self.__cleaner(word)
+                    # if word:
+                    #     if self.personal.check(word) is False:
+                    #         # print(word)
+                    #         for suggest in self.personal.suggest(word):
+                    #             for element in self.dic:
+                    #                 if suggest == element:
+                    #                     self.all_text[self.all_text.index(text)] = text.replace(word, element)
+                    #                     break
+
+                if re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text):
+                    print('entered dlno')
+                    print(text)
+                    dl = ''.join(re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text)).strip()
+                    drug_lic = ''.join(re.findall(r'([A-Z]{3}.\d{2}.\d{2}A$|\d+.\d+A$)', dl)).strip()
+                    if drug_lic:
+                        dlno[drug_lic] = True
                 elif re.findall(r'^GSTIN.(.*)', text):
+                    print('entered gst')
                     gst = ''.join(re.findall(r'^GSTIN.(.*)', text)).strip()
                     # print(gst)
-                    if re.findall(r'^GSTIN.(\d{2}[A-Z]{5}\d{4}[A-Z]\d[Z]\w)', text):
-                        gstin[gst] = True
-                    else:
-                        gstin[gst] = False
-                elif re.findall(r'^INV.DATE.(.*)', text):
-                    d = ''.join(re.findall(r'^INV.DATE.(.*)', text)).strip()
-                    # print(d)
-                    if re.findall(r'^INV.DATE.(\d+.\d+.\d+)', text):
-                        date[d] = True
-                    else:
-                        date[d] = False
-        print(results)
+                    gst_no = ''.join(re.findall(r'(\d{2}[A-Z]{5}\d{4}[A-Z]\d[Z]\w)', text)).strip()
+                    if gst_no:
+                        gstin[gst_no] = True
+                elif re.findall(r'^INV.DATE.|INVOICE DATE(.*)', text):
+                    print('entered inv date')
+                    d = ''.join(re.findall(r'^INV.DATE.|INVOICE DATE(.*)', text)).strip()
+                    inv_date = ''.join(re.findall(r'(\d+.\d+.\d+)', text)).strip()
+                    if inv_date:
+                        date[inv_date] = True
+            print(self.all_text)
+            print(path)
+            print('DLNO')
+            print(dlno)
+            print('GSTNO')
+            print(gstin)
+            print('DATE')
+            print(date)
 
 
 
