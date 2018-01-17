@@ -401,7 +401,7 @@ class Ocr:
         if subtext is None:
             subtext = '10ADPPA2292L1zo'
         elif len(subtext) < 15:
-            print(subtext)
+            # print(subtext)
             return subtext
         # print(subtext)
         subpart = subtext[0:2]
@@ -435,7 +435,8 @@ class Ocr:
         else:
             final = final + subpart
         final = final + subtext[14].upper()
-        print(final)
+        # print(final)
+        return final
 
     def lol(self, directory):
         paths = []
@@ -447,44 +448,81 @@ class Ocr:
         results = {}
         results['invoices'] = {}
         for path in paths:
+            # if not path == 'images/invoices/batch3/IMG_20180115_120856634_HDR.jpg':
+            #     continue
             input('process {}?'.format(path))
             self.set_image(path)
             # print(path)
-            self.text_detection()
-            # self.document_detection()
-            # print(self.all_text)
+            # self.text_detection()
+            self.document_detection()
+            print(self.doc_all_text)
             result = results['invoices'][path] = {}
             dlno = result['DLNO'] = {}
             gstin = result['GSTIN'] = {}
             date = result['INV DATE'] = {}
-            for text in self.all_text:
-                if re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text):
-                    print('entered dlno')
-                    print(text)
-                    # dl = ''.join(re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text)).strip()
-                    # drug_lic = ''.join(re.findall(r'([A-Z]{3}.\d{2}.\d{2}A$|\d+.\d+A$)', dl)).strip()
-                    if drug_lic:
-                        dlno[drug_lic] = True
-                elif re.findall(r'^GSTIN.(.*)', text):
-                    print('entered gst')
-                    gst = ''.join(re.findall(r'^GSTIN.(.*)', text)).strip()
-                    gst_no = ''.join(re.findall(r'(\d{2}[A-Z]{5}\d{4}[A-Z]\d[Z]\w)', gst)).strip()
-                    if gst_no:
-                        gstin[gst_no] = True
-                elif re.findall(r'^INV.DATE.|INVOICE DATE(.*)', text):
-                    print('entered inv date')
-                    d = ''.join(re.findall(r'^INV.DATE.|INVOICE DATE(.*)', text)).strip()
-                    inv_date = ''.join(re.findall(r'(\d+.\d+.\d+)', d)).strip()
-                    if inv_date:
-                        date[inv_date] = True
-            print(self.all_text)
-            print(path)
-            print('DLNO')
-            print(dlno)
-            print('GSTNO')
-            print(gstin)
-            print('DATE')
-            print(date)
+            for text in self.doc_all_text:
+                exp = text.replace(' ', '')
+                exp = self.__cleaner(exp)
+                exp = exp.replace('!', ' ')
+                exp = exp.replace('.', '')
+                # print(exp)
+                exp = self.add_missing_gst(exp)
+                # print(exp)
+                if re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', exp):
+                    print(re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', exp))
+                    continue
+                else:
+                    print('probable', exp)
+                text = self.__cleaner(text)
+                text = text.replace('-', ' ')
+                text = text.replace('.', '')
+                # print(text)
+                for word in text.split(' '):
+                    word = word.strip()
+                    d = a = 0
+                    # print(word)
+                    for ch in word:
+                        if ch.isdigit():
+                            d = d + 1
+                        elif ch.isalpha():
+                            a = a + 1
+                        if d >= 4 and a >= 5:
+                            if 10 < len(word) <= 16:
+                                # print(word)
+                                self.add_missing_gst(word)
+                                break
+                if re.findall(r'\d+\/\d+A', text):
+                    print(re.findall(r'\d+\/\d+A', text))
+                elif re.findall(r'\d+\/\d+\/\d+', text):
+                    print(re.findall(r'\d+\/\d+\/\d+', text))
+
+                # if re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text):
+                #     print('entered dlno')
+                #     print(text)
+                #     # dl = ''.join(re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text)).strip()
+                #     # drug_lic = ''.join(re.findall(r'([A-Z]{3}.\d{2}.\d{2}A$|\d+.\d+A$)', dl)).strip()
+                #     if drug_lic:
+                #         dlno[drug_lic] = True
+                # elif re.findall(r'^GSTIN.(.*)', text):
+                #     print('entered gst')
+                #     gst = ''.join(re.findall(r'^GSTIN.(.*)', text)).strip()
+                #     gst_no = ''.join(re.findall(r'(\d{2}[A-Z]{5}\d{4}[A-Z]\d[Z]\w)', gst)).strip()
+                #     if gst_no:
+                #         gstin[gst_no] = True
+                # elif re.findall(r'^INV.DATE.|INVOICE DATE(.*)', text):
+                #     print('entered inv date')
+                #     d = ''.join(re.findall(r'^INV.DATE.|INVOICE DATE(.*)', text)).strip()
+                #     inv_date = ''.join(re.findall(r'(\d+.\d+.\d+)', d)).strip()
+                #     if inv_date:
+                #         date[inv_date] = True
+            # print(self.all_text)
+            # print(path)
+            # print('DLNO')
+            # print(dlno)
+            # print('GSTNO')
+            # print(gstin)
+            # print('DATE')
+            # print(date)
 
 
 
