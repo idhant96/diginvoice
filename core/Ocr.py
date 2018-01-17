@@ -372,10 +372,16 @@ class Ocr:
                 final = final + number
         return final
 
-    def gst_che(self):
+    def gst_che(self, ):
+        # print(self.doc_all_text)
         for text in self.doc_all_text:
+            exp = re.findall(r'[A-Z]{5}\d{2}', text)
+            if exp:
+                text = text.replace(' ', '')
             text = self.__cleaner(text)
             text = text.replace('-',' ')
+            text = text.replace('.', '')
+            # print(text)
             for word in text.split(' '):
                 word = word.strip()
                 d = a = 0
@@ -390,52 +396,46 @@ class Ocr:
                             self.add_missing_gst(word)
                             break
 
-    def add_missing_gst(self, gstn = None):
-        if gstn is None:
-            gstn = '10ADPPA2292L1zo'
-        
-        # for text in self.blocks:
-        #     text = self.__cleaner(text)
-        #     if re.findall(r'GSTIN(.{15})', text):
-        #         text = text.replace(' ', '')
-        #         text = text.replace('-','')
-        #         text = text.strip()
-        #         print('lol text', text)
-        #         final = ''
-        #         subtext = ''.join(re.findall(r'GSTIN(.{15})', text))
-        #         subpart = subtext[0:2]
-        #         if not subpart.isdigit():
-        #             final = final + self.to_digits(subpart)
-        #         else:
-        #             final = final + subpart
-        #         subpart = subtext[2:7]
-        #         if not subpart.isalpha():
-        #             final = final + self.to_alphabets(subpart)
-        #         else:
-        #             final = final + subpart
-        #         subpart = subtext[7:11]
-        #         if not subpart.isdigit():
-        #             final = final + self.to_digits(subpart)
-        #         else:
-        #             final = final + subpart
-        #         subpart = subtext[11]
-        #         if not subpart.isalpha():
-        #             final = final + self.to_alphabets(subpart)
-        #         else:
-        #             final = final + subpart
-        #         subpart = subtext[12]
-        #         if not subpart.isdigit():
-        #             final = final + self.to_digits(subpart)
-        #         else:
-        #             final = final + subpart
-        #         subpart = subtext[13]
-        #         if subpart is not 'Z':
-        #             final = final + 'Z'
-        #         else:
-        #             final = final + subpart
-        #         final = final + subtext[14].upper()
-        #         print(final)
-
+    def add_missing_gst(self, subtext=None):
+        final = ''
+        if subtext is None:
+            subtext = '10ADPPA2292L1zo'
+        elif len(subtext) < 15:
+            print(subtext)
+            return subtext
+        # print(subtext)
+        subpart = subtext[0:2]
+        if not subpart.isdigit():
+            final = final + self.to_digits(subpart)
+        else:
+            final = final + subpart
+        subpart = subtext[2:7]
+        if not subpart.isalpha():
+            final = final + self.to_alphabets(subpart)
+        else:
+            final = final + subpart
+        subpart = subtext[7:11]
+        if not subpart.isdigit():
+            final = final + self.to_digits(subpart)
+        else:
+            final = final + subpart
+        subpart = subtext[11]
+        if not subpart.isalpha():
+            final = final + self.to_alphabets(subpart)
+        else:
+            final = final + subpart
+        subpart = subtext[12]
+        if not subpart.isdigit():
+            final = final + self.to_digits(subpart)
+        else:
+            final = final + subpart
+        subpart = subtext[13]
+        if subpart is not 'Z':
+            final = final + 'Z'
+        else:
+            final = final + subpart
+        final = final + subtext[14].upper()
+        print(final)
 
     def lol(self, directory):
         paths = []
@@ -451,7 +451,8 @@ class Ocr:
             self.set_image(path)
             # print(path)
             self.text_detection()
-            print(self.all_text)
+            # self.document_detection()
+            # print(self.all_text)
             result = results['invoices'][path] = {}
             dlno = result['DLNO'] = {}
             gstin = result['GSTIN'] = {}
@@ -460,8 +461,8 @@ class Ocr:
                 if re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text):
                     print('entered dlno')
                     print(text)
-                    dl = ''.join(re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text)).strip()
-                    drug_lic = ''.join(re.findall(r'([A-Z]{3}.\d{2}.\d{2}A$|\d+.\d+A$)', dl)).strip()
+                    # dl = ''.join(re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text)).strip()
+                    # drug_lic = ''.join(re.findall(r'([A-Z]{3}.\d{2}.\d{2}A$|\d+.\d+A$)', dl)).strip()
                     if drug_lic:
                         dlno[drug_lic] = True
                 elif re.findall(r'^GSTIN.(.*)', text):
