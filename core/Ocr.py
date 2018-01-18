@@ -121,24 +121,6 @@ class Ocr:
         response = Ocr.google_vision_client.document_text_detection(image=vision_image)
         self.annotations = response.text_annotations
         self.doc_all_text = self.annotations[0].description.split('\n')
-        # for page in self.annotations.pages:
-        #     # print('pages ',len(page))
-        #     for block in page.blocks:
-        #         # print('blocks ', block.paragraphs)
-        #         # input('contineu??')
-        #         block_words = []
-        #         for paragraph in block.paragraphs:
-        #             block_words.extend(paragraph.words)
-        #         block_symbols = []
-        #         for word in block_words:
-        #             block_symbols.extend(word.symbols)
-        #         block_text = ''
-        #         for symbol in block_symbols:
-        #             block_text = block_text + symbol.text
-        #         self.blocks.append(block_text)
-            # print(self.blocks)
-            # input('block ended')
-        # print(self.blocks)
 
     def text_detection(self):
         """
@@ -372,38 +354,91 @@ class Ocr:
                 final = final + number
         return final
 
-    def gst_che(self, ):
-        # print(self.doc_all_text)
-        for text in self.doc_all_text:
-            exp = re.findall(r'[A-Z]{5}\d{2}', text)
-            if exp:
-                text = text.replace(' ', '')
-            text = self.__cleaner(text)
-            text = text.replace('-',' ')
-            text = text.replace('.', '')
-            # print(text)
-            for word in text.split(' '):
-                word = word.strip()
-                d = a = 0
-                # print(word)
-                for ch in word:
-                    if ch.isdigit():
-                        d = d + 1
-                    elif ch.isalpha():
-                        a = a + 1
-                    if d >= 5 and a >= 5:
-                        if 10 < len(word) < 16:
-                            self.add_missing_gst(word)
-                            break
+
+    @staticmethod
+    def check_gst_format(word):
+        if re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', word):
+            return ''.join(re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', word))
+        else:
+            return None
+
+    @staticmethod
+    def probable_gst(word):
+        if len(word) > 12:
+            word = word.strip()
+            d = a = 0
+            for ch in word:
+                if ch.isdigit():
+                    d = d + 1
+                elif ch.isalpha():
+                    a = a + 1
+                if d >= 4 and a >= 5:
+                    return True
+        return False
+
+    def formatter(self, word):
+        word = self.__cleaner(word)
+        word = word.replace(' ', '')
+        word = word.replace('.', '')
+        word = word.replace('!', '')
+        return word
+
+    def change_gst_letters(self, subtext):
+        final = ''
+        try:
+            subpart = subtext[0:2]
+            if not subpart.isdigit():
+                final = final + self.to_digits(subpart)
+            else:
+                final = final + subpart
+            subpart = subtext[2:7]
+            if not subpart.isalpha():
+                final = final + self.to_alphabets(subpart)
+            else:
+                final = final + subpart
+            subpart = subtext[7:11]
+            if not subpart.isdigit():
+                final = final + self.to_digits(subpart)
+            else:
+                final = final + subpart
+            subpart = subtext[11]
+            if not subpart.isalpha():
+                final = final + self.to_alphabets(subpart)
+            else:
+                final = final + subpart
+            subpart = subtext[12]
+            if not subpart.isdigit():
+                final = final + self.to_digits(subpart)
+            else:
+                final = final + subpart
+            subpart = subtext[13]
+            if subpart is not 'Z':
+                final = final + 'Z'
+            else:
+                final = final + subpart
+            final = final + subtext[14].upper()
+            # print(final)
+            return final
+        except IndexError:
+            # print('Exception Handled')
+            return final
+
 
     def add_missing_gst(self, subtext=None):
         final = ''
         if subtext is None:
             subtext = '10ADPPA2292L1zo'
-        elif len(subtext) < 15:
+        elif 10 < len(subtext) < 15:
             # print(subtext)
+            if self.gst_che(subtext):
+                if re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', subtext):
+                    return {subtext: True}
+                return {subtext: 'probable'}
+            else:
+                return subtext
+        else:
             return subtext
-        # print(subtext)
+        print(subtext)
         subpart = subtext[0:2]
         if not subpart.isdigit():
             final = final + self.to_digits(subpart)
@@ -446,85 +481,47 @@ class Ocr:
                     paths.append(os.path.join(root, file))
         # print(paths)
         results = {}
-        results['invoices'] = {}
+        results["invoices"] = {}
         for path in paths:
             # if not path == 'images/invoices/batch3/IMG_20180115_120856634_HDR.jpg':
             #     continue
-            input('process {}?'.format(path))
+            # input('process {}?'.format(path))
             self.set_image(path)
             # print(path)
             # self.text_detection()
             self.document_detection()
-            print(self.doc_all_text)
-            result = results['invoices'][path] = {}
-            dlno = result['DLNO'] = {}
-            gstin = result['GSTIN'] = {}
-            date = result['INV DATE'] = {}
+            # print(self.doc_all_text)
+            result = results["invoices"][path] = {}
+            dlno = result["DLNO"] = {}
+            gstin = result["GSTIN"] = {}
+            date = result["INV DATE"] = {}
             for text in self.doc_all_text:
-                exp = text.replace(' ', '')
-                exp = self.__cleaner(exp)
-                exp = exp.replace('!', ' ')
-                exp = exp.replace('.', '')
-                # print(exp)
-                exp = self.add_missing_gst(exp)
-                # print(exp)
-                if re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', exp):
-                    print(re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', exp))
-                    continue
-                else:
-                    print('probable', exp)
-                text = self.__cleaner(text)
-                text = text.replace('-', ' ')
-                text = text.replace('.', '')
-                # print(text)
-                for word in text.split(' '):
-                    word = word.strip()
-                    d = a = 0
-                    # print(word)
-                    for ch in word:
-                        if ch.isdigit():
-                            d = d + 1
-                        elif ch.isalpha():
-                            a = a + 1
-                        if d >= 4 and a >= 5:
-                            if 10 < len(word) <= 16:
-                                # print(word)
-                                self.add_missing_gst(word)
-                                break
+
+                if self.probable_gst(text):
+                    prob_gst = self.formatter(text)
+                    if self.check_gst_format(prob_gst):
+                        gstin[self.check_gst_format(prob_gst)] = True
+                        continue
+                    else:
+                        prob_gst = ''.join(re.findall(r'[A-Z\d]{2}[A-Z]{5}\d{3,4}[A-Z\d]{3,4}', prob_gst))
+                        prob_gst = self.change_gst_letters(prob_gst)
+                        if self.check_gst_format(prob_gst):
+                            gstin[self.check_gst_format(prob_gst)] = True
+                            continue
+                    # prob_gst = self.change_gst_letters(prob_gst)
+                    prob_gst = ''.join(re.findall(r'[A-Z\d]{2}[A-Z]{5}\d{3,4}[A-Z\d]{3,4}', text))
+                    if prob_gst:
+                        prob_gst = self.change_gst_letters(prob_gst)
+                        if self.check_gst_format(prob_gst):
+                            gstin[prob_gst] = True
+                        else:
+                            gstin[prob_gst] = False
+
                 if re.findall(r'\d+\/\d+A', text):
-                    print(re.findall(r'\d+\/\d+A', text))
+                    dlno[''.join(re.findall(r'\d+\/\d+A', text))] = True
                 elif re.findall(r'\d+\/\d+\/\d+', text):
-                    print(re.findall(r'\d+\/\d+\/\d+', text))
-
-                # if re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text):
-                #     print('entered dlno')
-                #     print(text)
-                #     # dl = ''.join(re.findall(r'^DL.NO.|D.L.NO.|Drug.Lic.NO.|Drug(.*)', text)).strip()
-                #     # drug_lic = ''.join(re.findall(r'([A-Z]{3}.\d{2}.\d{2}A$|\d+.\d+A$)', dl)).strip()
-                #     if drug_lic:
-                #         dlno[drug_lic] = True
-                # elif re.findall(r'^GSTIN.(.*)', text):
-                #     print('entered gst')
-                #     gst = ''.join(re.findall(r'^GSTIN.(.*)', text)).strip()
-                #     gst_no = ''.join(re.findall(r'(\d{2}[A-Z]{5}\d{4}[A-Z]\d[Z]\w)', gst)).strip()
-                #     if gst_no:
-                #         gstin[gst_no] = True
-                # elif re.findall(r'^INV.DATE.|INVOICE DATE(.*)', text):
-                #     print('entered inv date')
-                #     d = ''.join(re.findall(r'^INV.DATE.|INVOICE DATE(.*)', text)).strip()
-                #     inv_date = ''.join(re.findall(r'(\d+.\d+.\d+)', d)).strip()
-                #     if inv_date:
-                #         date[inv_date] = True
-            # print(self.all_text)
-            # print(path)
-            # print('DLNO')
-            # print(dlno)
-            # print('GSTNO')
-            # print(gstin)
-            # print('DATE')
-            # print(date)
-
-
+                    date[''.join(re.findall(r'\d+\/\d+\/\d+', text))] = True
+        print(json.loads(json.dumps(results)))
 
     # def cropper_x(self, name):
     #     crop_img = self.image[:self.y_max, self]
