@@ -36,6 +36,7 @@ class Ocr:
         self.crop_hints = ['PRODUCTS','Particulars','PARTICULARS', 'DESCRIPTION', 'PRODUCT',
                            ]
         self.doc_all_text = []
+        self.formatted_text = ''
         self.blocks = []
         self.index = None
         self.o_item = []
@@ -143,7 +144,7 @@ class Ocr:
     def get_props(self):
         self.text_props = {}
         times = 1
-        print(self.all_text)
+        # print(self.all_text)
         for obj in self.annotations:
             text = self.__spell_check(obj.description)
             vertice = obj.bounding_poly.vertices
@@ -166,6 +167,60 @@ class Ocr:
                                                              (vertice[3].x, vertice[3].y)]
         # print(self.text_props)
         # return self.text_props
+
+    def format_doctext(self):
+        new_text = ''
+        # print(self.doc_all_text)
+        for text in self.doc_all_text:
+            text = self.__cleaner(text)
+            text = text.upper()
+            text = text.replace('.', '')
+            for word in text.split(' '):
+                if word:
+                    word = self.__spell_check(word)
+                if word:
+                    new_text = new_text + word + ' '
+        self.formatted_text = new_text
+        print(self.formatted_text)
+
+    def find_products(self, products):
+        # print(self.doc_all_text)
+        result = []
+        for product in products:
+            expression = ''
+            for ch in product:
+                expression = expression + "[\s]*" + ch
+            expression = expression + '[\s]*'
+            if re.findall(r'{}'.format(expression), self.formatted_text):
+                # print('regex result: ', product)
+                result.append(product)
+        # print(text)
+        for word in self.formatted_text.split(' '):
+            if word:
+                word = self.__spell_check(word)
+                for product in products:
+                    if product == word:
+                        # print('normal result: ', word)
+                        result.append(word)
+        return result
+
+    def get_products(self,  directory, products):
+        paths = []
+        for root, _, files in os.walk("{}".format(directory)):
+            for file in files:
+                if file.endswith(".jpg"):
+                    paths.append(os.path.join(root, file))
+        for path in paths:
+            # if not path == 'images/invoices/more/IMG_20180105_181004896.jpg':
+            #     continue
+
+            self.set_image(path)
+            self.document_detection()
+            self.format_doctext()
+            result = self.find_products(products)
+            print('{}: '.format(path), result)
+            print()
+
 
     def get_roi(self, region_data):
         print('getting roi ')
@@ -426,9 +481,7 @@ class Ocr:
 
     def add_missing_gst(self, subtext=None):
         final = ''
-        if subtext is None:
-            subtext = '10ADPPA2292L1zo'
-        elif 10 < len(subtext) < 15:
+        if subtext and 10 < len(subtext) < 15:
             # print(subtext)
             if self.gst_che(subtext):
                 if re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', subtext):
@@ -436,8 +489,6 @@ class Ocr:
                 return {subtext: 'probable'}
             else:
                 return subtext
-        else:
-            return subtext
         print(subtext)
         subpart = subtext[0:2]
         if not subpart.isdigit():
@@ -473,7 +524,7 @@ class Ocr:
         # print(final)
         return final
 
-    def lol(self, directory):
+    def get_gst_inv_date(self, directory):
         paths = []
         for root, _, files in os.walk("{}".format(directory)):
             for file in files:
@@ -490,13 +541,12 @@ class Ocr:
             # print(path)
             # self.text_detection()
             self.document_detection()
-            # print(self.doc_all_text)
+            print(self.doc_all_text)
             result = results["invoices"][path] = {}
             dlno = result["DLNO"] = {}
             gstin = result["GSTIN"] = {}
             date = result["INV DATE"] = {}
             for text in self.doc_all_text:
-
                 if self.probable_gst(text):
                     prob_gst = self.formatter(text)
                     if self.check_gst_format(prob_gst):
@@ -521,7 +571,7 @@ class Ocr:
                     dlno[''.join(re.findall(r'\d+\/\d+A', text))] = True
                 elif re.findall(r'\d+\/\d+\/\d+', text):
                     date[''.join(re.findall(r'\d+\/\d+\/\d+', text))] = True
-        print(json.loads(json.dumps(results)))
+        print(results)
 
     # def cropper_x(self, name):
     #     crop_img = self.image[:self.y_max, self]

@@ -1,15 +1,25 @@
 {
   "all": [
-    "CADIPHYLATE",
+        "CIPROBID 500MG TAB",
     "CIPROBID",
+    "500MG",
+    "TAB",
+    "CIPROBID 250MG TAB",
+    "250MG",
     "CIPROBID INFUSION",
-    "CYTDLOG",
+    "INFUSION",
     "DECANEUROBOL",
+    "DEXONA 2ML INJ",
     "DEXONA",
+    "2ML",
+    "INJ",
+    "DEXONA TAB",
+    "DEXONA TAB (ZYDES)",
+    "(ZYDES)",
+    "MIFEGEST KIT",
     "MIFEGEST",
-    "NEUROBOL",
-    "Neurobol*",
-    "IVORAL",
+    "KIT",
+    "MIFEGEST KIT TAB",
     "Op.Bal.Qty",
     "Quantity",
     "Receipt",
@@ -58,6 +68,5 @@
     "ARG",
     "MGGR",
     "LOC"
-
   ]
 }
