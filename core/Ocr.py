@@ -195,13 +195,13 @@ class Ocr:
                 # print('regex result: ', product)
                 result.append(product)
         # print(text)
-        for word in self.formatted_text.split(' '):
-            if word:
-                word = self.__spell_check(word)
-                for product in products:
-                    if product == word:
-                        # print('normal result: ', word)
-                        result.append(word)
+        # for word in self.formatted_text.split(' '):
+        #     if word:
+        #         word = self.__spell_check(word)
+        #         for product in products:
+        #             if product == word:
+        #                 # print('normal result: ', word)
+        #                 result.append(word)
         return result
 
     def get_products(self,  directory, products):
