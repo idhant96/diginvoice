@@ -1,385 +1,0 @@
-Month,Region,Headquarter,Call Average
-5,Delhi,Ambala,575
-5,Delhi,Amritsar,231
-5,Delhi,Bharatpur,429
-5,Delhi,Bhatinda,548
-5,Delhi,Delhi,52
-5,Delhi,Hisar,476
-5,Delhi,Jaipur,573
-5,Delhi,Jalandhar,577
-5,Delhi,Jammu,521
-5,Delhi,Karnal,582
-5,Delhi,Kota,148
-5,Delhi,Ludhiana,141
-5,Delhi,Mandi,261
-5,Delhi,Patiala,151
-5,Delhi,Rohtak,730
-5,Delhi,Sikar,614
-5,Delhi,Sri Ganganagar,226
-5,Delhi,Udaipur,29
-5,Kolkata,Balasore,115
-5,Kolkata,Bhagalpur,242
-5,Kolkata,Burdwan,36
-5,Kolkata,Dhanbad,179
-5,Kolkata,Dharbanga,429
-5,Kolkata,Dibrugarh,89
-5,Kolkata,Gauhati,243
-5,Kolkata,Gaya,14
-5,Kolkata,Jamshedpur,235
-5,Kolkata,Kolkata - 1,63
-5,Kolkata,Kolkata - 2,468
-5,Kolkata,Krishnanagar,189
-5,Kolkata,Malda,652
-5,Kolkata,Midnapore,295
-5,Kolkata,Motihari,136
-5,Kolkata,Muzaffarpur,494
-5,Kolkata,Nagaon,43
-5,Kolkata,Patna - 1,512
-5,Kolkata,Patna - 2,376
-5,Kolkata,Purnea,139
-5,Kolkata,Ranchi - 1,284
-5,Kolkata,Ranchi - 2,42
-5,Kolkata,Silchar,17
-5,Kolkata,Siliguri / Coochbehar,384
-5,Lucknow,Agra,546
-5,Lucknow,Aligarh,656
-5,Lucknow,Allahabad,116
-5,Lucknow,Azamgarh,478
-5,Lucknow,Bareilly,505
-5,Lucknow,CUTTACK,2
-5,Lucknow,Dehradun,447
-5,Lucknow,Faizabad,298
-5,Lucknow,Ghaziabad,382
-5,Lucknow,Ghazipur / Balia,302
-5,Lucknow,Gorakhpur -1,600
-5,Lucknow,Gorakhpur -2,98
-5,Lucknow,Haldwani,399
-5,Lucknow,Jhansi,493
-5,Lucknow,Kanpur - 2,201
-5,Lucknow,Lucknow - 1,53
-5,Lucknow,Lucknow-2,22
-5,Lucknow,Meerut,653
-5,Lucknow,Moradabad,416
-5,Lucknow,Muzaffarnagar,798
-5,Lucknow,Varanasi-1,620
-5,Lucknow,Varanasi-2,93
-6,Delhi,Ambala,593
-6,Delhi,Amritsar,609
-6,Delhi,Bharatpur,483
-6,Delhi,Bhatinda,689
-6,Delhi,Delhi,706
-6,Delhi,Gurgaon,20
-6,Delhi,Hisar,575
-6,Delhi,Jaipur,739
-6,Delhi,Jalandhar,779
-6,Delhi,Jammu,669
-6,Delhi,Jodhpur,196
-6,Delhi,Karnal,700
-6,Delhi,Kota,242
-6,Delhi,Ludhiana,708
-6,Delhi,Mandi,77
-6,Delhi,Patiala,499
-6,Delhi,Rohtak,707
-6,Delhi,Sikar,516
-6,Delhi,Sri Ganganagar,146
-6,Delhi,Srinagar,296
-6,Kolkata,BHUBANESWAR,161
-6,Kolkata,Balasore,7
-6,Kolkata,Bhagalpur,787
-6,Kolkata,Burdwan,523
-6,Kolkata,CUTTACK,168
-6,Kolkata,Dharbanga,420
-6,Kolkata,Dibrugarh,432
-6,Kolkata,Gauhati,401
-6,Kolkata,Gaya,505
-6,Kolkata,Jamshedpur,437
-6,Kolkata,Kolkata - 1,288
-6,Kolkata,Kolkata - 2,767
-6,Kolkata,Krishnanagar,319
-6,Kolkata,Malda,69
-6,Kolkata,Midnapore,478
-6,Kolkata,Motihari,645
-6,Kolkata,Muzaffarpur,565
-6,Kolkata,Nagaon,298
-6,Kolkata,Patna - 1,693
-6,Kolkata,Patna - 2,666
-6,Kolkata,Purnea,675
-6,Kolkata,Ranchi - 1,751
-6,Kolkata,Ranchi - 2,446
-6,Kolkata,Silchar,339
-6,Kolkata,Siliguri / Coochbehar,46
-6,Lucknow,Agra,632
-6,Lucknow,Aligarh,702
-6,Lucknow,Allahabad,666
-6,Lucknow,Azamgarh,580
-6,Lucknow,Dehradun,514
-6,Lucknow,Faizabad,514
-6,Lucknow,Ghaziabad,594
-6,Lucknow,Ghazipur / Balia,686
-6,Lucknow,Gorakhpur -1,588
-6,Lucknow,Gorakhpur -2,404
-6,Lucknow,Haldwani,51
-6,Lucknow,Jhansi,594
-6,Lucknow,Kanpur - 1,67
-6,Lucknow,Kanpur - 2,496
-6,Lucknow,Lucknow - 1,179
-6,Lucknow,Lucknow-2,410
-6,Lucknow,Meerut,854
-6,Lucknow,Moradabad,712
-6,Lucknow,Muzaffarnagar,1129
-6,Lucknow,Varanasi-1,710
-6,Lucknow,Varanasi-2,359
-7,Delhi,Ambala,694
-7,Delhi,Amritsar,721
-7,Delhi,Bharatpur,559
-7,Delhi,Bhatinda,675
-7,Delhi,Delhi,767
-7,Delhi,Gurgaon,72
-7,Delhi,Hisar,731
-7,Delhi,Jaipur,882
-7,Delhi,Jalandhar,803
-7,Delhi,Jammu,732
-7,Delhi,Jodhpur,105
-7,Delhi,Karnal,721
-7,Delhi,Kota,252
-7,Delhi,Ludhiana,942
-7,Delhi,Mandi,126
-7,Delhi,Patiala,53
-7,Delhi,Rohtak,767
-7,Delhi,Sikar,176
-7,Delhi,Sri Ganganagar,122
-7,Delhi,Srinagar,629
-7,Delhi,Udaipur,667
-7,Kolkata,BHUBANESWAR,304
-7,Kolkata,Balasore,460
-7,Kolkata,Bhagalpur,919
-7,Kolkata,Burdwan,167
-7,Kolkata,CUTTACK,369
-7,Kolkata,Dhanbad,507
-7,Kolkata,Dharbanga,480
-7,Kolkata,Dibrugarh,408
-7,Kolkata,Gauhati,719
-7,Kolkata,Gaya,762
-7,Kolkata,Jamshedpur,728
-7,Kolkata,Kolkata - 1,14
-7,Kolkata,Kolkata - 2,169
-7,Kolkata,Krishnanagar,250
-7,Kolkata,Midnapore,209
-7,Kolkata,Motihari,745
-7,Kolkata,Muzaffarpur,444
-7,Kolkata,Nagaon,544
-7,Kolkata,Patna - 1,831
-7,Kolkata,Patna - 2,152
-7,Kolkata,Purnea,590
-7,Kolkata,Ranchi - 1,943
-7,Kolkata,Ranchi - 2,531
-7,Kolkata,Silchar,410
-7,Lucknow,Agra,758
-7,Lucknow,Aligarh,179
-7,Lucknow,Allahabad,735
-7,Lucknow,Azamgarh,684
-7,Lucknow,Bareilly,677
-7,Lucknow,Dehradun,653
-7,Lucknow,Faizabad,500
-7,Lucknow,Ghaziabad,833
-7,Lucknow,Ghazipur / Balia,745
-7,Lucknow,Gorakhpur -1,804
-7,Lucknow,Gorakhpur -2,702
-7,Lucknow,Jhansi,767
-7,Lucknow,Kanpur - 1,222
-7,Lucknow,Kanpur - 2,748
-7,Lucknow,Lucknow - 1,658
-7,Lucknow,Lucknow-2,700
-7,Lucknow,Meerut,743
-7,Lucknow,Moradabad,816
-7,Lucknow,Muzaffarnagar,1199
-7,Lucknow,Varanasi-1,866
-7,Lucknow,Varanasi-2,537
-8,Delhi,Ambala,695
-8,Delhi,Amritsar,804
-8,Delhi,Bharatpur,547
-8,Delhi,Bhatinda,688
-8,Delhi,Delhi,955
-8,Delhi,Gurgaon,126
-8,Delhi,Hisar,681
-8,Delhi,Jaipur,754
-8,Delhi,Jalandhar,893
-8,Delhi,Jammu,670
-8,Delhi,Jodhpur,578
-8,Delhi,Karnal,686
-8,Delhi,Kota,196
-8,Delhi,Ludhiana,963
-8,Delhi,Mandi,676
-8,Delhi,Patiala,379
-8,Delhi,Rohtak,319
-8,Delhi,Sikar,81
-8,Delhi,Sri Ganganagar,382
-8,Delhi,Srinagar,670
-8,Delhi,Udaipur,521
-8,Kolkata,BHUBANESWAR,2
-8,Kolkata,Balasore,568
-8,Kolkata,Bhagalpur,680
-8,Kolkata,Burdwan,6
-8,Kolkata,CUTTACK,469
-8,Kolkata,Dhanbad,712
-8,Kolkata,Dharbanga,591
-8,Kolkata,Dibrugarh,515
-8,Kolkata,Gauhati,511
-8,Kolkata,Gaya,677
-8,Kolkata,Jamshedpur,691
-8,Kolkata,Motihari,687
-8,Kolkata,Muzaffarpur,484
-8,Kolkata,Nagaon,441
-8,Kolkata,Patna - 1,863
-8,Kolkata,Patna - 2,608
-8,Kolkata,Purnea,527
-8,Kolkata,Ranchi - 1,682
-8,Kolkata,Ranchi - 2,484
-8,Kolkata,Silchar,172
-8,Lucknow,Agra,785
-8,Lucknow,Aligarh,839
-8,Lucknow,Allahabad,703
-8,Lucknow,Azamgarh,605
-8,Lucknow,Bareilly,583
-8,Lucknow,Dehradun,684
-8,Lucknow,Faizabad,554
-8,Lucknow,Ghaziabad,983
-8,Lucknow,Ghazipur / Balia,672
-8,Lucknow,Gorakhpur -1,625
-8,Lucknow,Gorakhpur -2,567
-8,Lucknow,Haldwani,342
-8,Lucknow,Jhansi,690
-8,Lucknow,Kanpur - 1,468
-8,Lucknow,Kanpur - 2,717
-8,Lucknow,Lucknow - 1,652
-8,Lucknow,Lucknow-2,803
-8,Lucknow,Meerut,805
-8,Lucknow,Moradabad,818
-8,Lucknow,Muzaffarnagar,1070
-8,Lucknow,Varanasi-1,902
-8,Lucknow,Varanasi-2,577
-9,Delhi,Ambala,788
-9,Delhi,Amritsar,801
-9,Delhi,Bharatpur,556
-9,Delhi,Bhatinda,721
-9,Delhi,Delhi,909
-9,Delhi,Gurgaon,710
-9,Delhi,Hisar,741
-9,Delhi,Jaipur,720
-9,Delhi,Jalandhar,939
-9,Delhi,Jammu,784
-9,Delhi,Jodhpur,699
-9,Delhi,Karnal,818
-9,Delhi,Kota,297
-9,Delhi,Ludhiana,908
-9,Delhi,Mandi,699
-9,Delhi,Patiala,797
-9,Delhi,Rohtak,603
-9,Delhi,Sikar,80
-9,Delhi,Sri Ganganagar,478
-9,Delhi,Srinagar,729
-9,Delhi,Udaipur,644
-9,Kolkata,Balasore,573
-9,Kolkata,Bhagalpur,746
-9,Kolkata,Burdwan,9
-9,Kolkata,CUTTACK,531
-9,Kolkata,Dhanbad,588
-9,Kolkata,Dharbanga,741
-9,Kolkata,Dibrugarh,540
-9,Kolkata,Gauhati,600
-9,Kolkata,Gaya,631
-9,Kolkata,Jamshedpur,426
-9,Kolkata,Motihari,597
-9,Kolkata,Muzaffarpur,956
-9,Kolkata,Nagaon,494
-9,Kolkata,Patna - 1,879
-9,Kolkata,Patna - 2,632
-9,Kolkata,Purnea,707
-9,Kolkata,Ranchi - 1,569
-9,Kolkata,Ranchi - 2,508
-9,Kolkata,Silchar,334
-9,Lucknow,Agra,986
-9,Lucknow,Aligarh,767
-9,Lucknow,Allahabad,790
-9,Lucknow,Azamgarh,727
-9,Lucknow,Bareilly,714
-9,Lucknow,Dehradun,878
-9,Lucknow,Faizabad,584
-9,Lucknow,Ghaziabad,987
-9,Lucknow,Ghazipur / Balia,797
-9,Lucknow,Gorakhpur -1,775
-9,Lucknow,Gorakhpur -2,788
-9,Lucknow,Haldwani,644
-9,Lucknow,Jhansi,783
-9,Lucknow,Kanpur - 1,639
-9,Lucknow,Kanpur - 2,773
-9,Lucknow,Lucknow - 1,768
-9,Lucknow,Lucknow-2,838
-9,Lucknow,Meerut,894
-9,Lucknow,Moradabad,928
-9,Lucknow,Muzaffarnagar,1088
-9,Lucknow,Varanasi-1,891
-9,Lucknow,Varanasi-2,857
-10,Delhi,Ambala,672
-10,Delhi,Amritsar,697
-10,Delhi,Bharatpur,577
-10,Delhi,Bhatinda,617
-10,Delhi,Delhi,677
-10,Delhi,Gurgaon,737
-10,Delhi,Hisar,676
-10,Delhi,Jaipur,940
-10,Delhi,Jalandhar,739
-10,Delhi,Jammu,611
-10,Delhi,Jodhpur,521
-10,Delhi,Karnal,647
-10,Delhi,Kota,294
-10,Delhi,Ludhiana,867
-10,Delhi,Mandi,616
-10,Delhi,Patiala,633
-10,Delhi,Rohtak,634
-10,Delhi,Sikar,27
-10,Delhi,Sri Ganganagar,561
-10,Delhi,Srinagar,686
-10,Delhi,Udaipur,433
-10,Kolkata,BHUBANESWAR,209
-10,Kolkata,Balasore,570
-10,Kolkata,Bhagalpur,582
-10,Kolkata,CUTTACK,572
-10,Kolkata,Dhanbad,596
-10,Kolkata,Dharbanga,589
-10,Kolkata,Dibrugarh,404
-10,Kolkata,Gauhati,513
-10,Kolkata,Gaya,564
-10,Kolkata,Jamshedpur,579
-10,Kolkata,Motihari,343
-10,Kolkata,Muzaffarpur,914
-10,Kolkata,Nagaon,477
-10,Kolkata,Patna - 1,642
-10,Kolkata,Patna - 2,644
-10,Kolkata,Purnea,502
-10,Kolkata,Ranchi - 1,561
-10,Kolkata,Ranchi - 2,483
-10,Kolkata,Silchar,380
-10,Lucknow,Agra,1065
-10,Lucknow,Aligarh,917
-10,Lucknow,Allahabad,648
-10,Lucknow,Azamgarh,647
-10,Lucknow,Bareilly,741
-10,Lucknow,Dehradun,797
-10,Lucknow,Faizabad,314
-10,Lucknow,Ghaziabad,1112
-10,Lucknow,Ghazipur / Balia,722
-10,Lucknow,Gorakhpur -1,664
-10,Lucknow,Gorakhpur -2,752
-10,Lucknow,Haldwani,481
-10,Lucknow,Jhansi,815
-10,Lucknow,Kanpur - 1,523
-10,Lucknow,Kanpur - 2,776
-10,Lucknow,Lucknow - 1,687
-10,Lucknow,Lucknow-2,800
-10,Lucknow,Meerut,671
-10,Lucknow,Moradabad,941
-10,Lucknow,Muzaffarnagar,1078
-10,Lucknow,Varanasi-1,885
-10,Lucknow,Varanasi-2,635
-Call Average,,,"Month  Region   Head            5      Delhi    Ambala              21.296296                Amritsar            17.769231                Bharatpur           17.160000                Bhatinda            21.076923                Delhi                2.166667                Gurgaon                   NaN                Hisar               17.629630                Jaipur              22.920000                Jalandhar           19.896552                Jammu               19.296296                Jhunjhunu                 NaN                Jodhpur                   NaN                Karnal              21.555556                Kota                      NaN                Ludhiana            12.818182                Mandi               10.875000                Patiala             16.777778                Rohtak              27.037037                Sikar                     NaN                Sri Ganganagar            NaN                Udaipur              2.230769       Kolkata  BHUBANESWAR               NaN                Balasore            14.375000                Bhagalpur           10.083333                Burdwan              1.440000                CUTTACK                   NaN                Dhanbad             17.900000                Dharbanga           16.500000                Dibrugarh            4.045455                Gauhati             12.789474                                      ...    10     Kolkata  Muzaffarpur         41.545455                Nagaon              23.850000                Patna - 1           30.571429                Patna - 2           30.666667                Purnea              25.100000                Ranchi - 1          26.714286                Ranchi - 2          21.954545                Silchar             22.352941       Lucknow  Agra                46.304348                Aligarh             39.869565                Allahabad           28.173913                Azamgarh            30.809524                Bareilly            32.217391                Dehradun            34.652174                Faizabad            26.166667                Ghaziabad           48.347826                Ghazipur / Balia    31.391304                Gorakhpur -1        31.619048                Gorakhpur -2        32.695652                Haldwani            26.722222                Jhansi              33.958333                Kanpur - 1          34.866667                Kanpur - 2          35.272727                Lucknow - 1         31.227273                Lucknow-2           33.333333                Meerut              37.277778                Moradabad           39.208333                Muzaffarnagar       44.916667                Varanasi-1          38.478261                Varanasi-2          30.238095Length: 390, dtype: float64"
