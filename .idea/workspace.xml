@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f014d5b-2d8e-4522-943c-7916c9a5ca18" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/LICENSE" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
       <change beforePath="$PROJECT_DIR$/core/Ocr.py" afterPath="$PROJECT_DIR$/core/Ocr.py" />
-      <change beforePath="$PROJECT_DIR$/data/products.json" afterPath="$PROJECT_DIR$/data/products.json" />
-      <change beforePath="$PROJECT_DIR$/exp.py" afterPath="$PROJECT_DIR$/exp.py" />
+      <change beforePath="$PROJECT_DIR$/data/all.json" afterPath="$PROJECT_DIR$/data/all.json" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,45 +14,36 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Ocr.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Ocr.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/core/Ocr.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="222" column="47" lean-forward="false" selection-start-line="222" selection-start-column="47" selection-end-line="222" selection-end-column="47" />
+            <state relative-caret-position="736">
+              <caret line="187" column="24" lean-forward="true" selection-start-line="187" selection-start-column="24" selection-end-line="187" selection-end-column="24" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
-                <element signature="e#498#1337#0" expanded="false" />
-                <element signature="e#1390#1618#0" expanded="false" />
-                <element signature="e#1669#1806#0" expanded="false" />
-                <element signature="e#3164#3385#0" expanded="false" />
-                <element signature="e#3429#3778#0" expanded="false" />
-                <element signature="e#3818#4436#0" expanded="false" />
-                <element signature="e#4471#5816#0" expanded="false" />
-                <element signature="e#8055#8815#0" expanded="false" />
-                <element signature="e#8855#9790#0" expanded="false" />
-                <element signature="e#9860#10905#0" expanded="false" />
-                <element signature="e#10942#12227#0" expanded="false" />
-                <element signature="e#12262#12417#0" expanded="false" />
-                <element signature="e#12455#13717#0" expanded="false" />
-                <element signature="e#13776#14419#0" expanded="false" />
-                <element signature="e#14478#15009#0" expanded="false" />
-                <element signature="e#15070#15271#0" expanded="false" />
-                <element signature="e#15327#15646#0" expanded="false" />
-                <element signature="e#15687#15845#0" expanded="false" />
-                <element signature="e#15898#17217#0" expanded="false" />
-                <element signature="e#17272#18716#0" expanded="false" />
-                <element signature="e#18769#20998#0" expanded="false" />
+                <element signature="e#527#1366#0" expanded="false" />
+                <element signature="e#1419#1647#0" expanded="false" />
+                <element signature="e#1698#1835#0" expanded="false" />
+                <element signature="e#3532#3753#0" expanded="false" />
+                <element signature="e#3797#4146#0" expanded="false" />
+                <element signature="e#4186#4804#0" expanded="false" />
+                <element signature="e#4839#6184#0" expanded="false" />
+                <element signature="e#7563#8124#0" expanded="false" />
+                <element signature="e#8419#9179#0" expanded="false" />
+                <element signature="e#9219#10154#0" expanded="false" />
+                <element signature="e#10224#11269#0" expanded="false" />
+                <element signature="e#11306#12591#0" expanded="false" />
+                <element signature="e#12626#12781#0" expanded="false" />
+                <element signature="e#12819#14081#0" expanded="false" />
+                <element signature="e#14140#14783#0" expanded="false" />
+                <element signature="e#14842#15373#0" expanded="false" />
+                <element signature="e#15434#15635#0" expanded="false" />
+                <element signature="e#15691#16010#0" expanded="false" />
+                <element signature="e#16051#16209#0" expanded="false" />
+                <element signature="e#16262#17581#0" expanded="false" />
+                <element signature="e#17636#19080#0" expanded="false" />
+                <element signature="e#19133#21362#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-151">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -87,8 +74,8 @@
       <file leaf-file-name="all.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/all.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="10" column="19" lean-forward="true" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+            <state relative-caret-position="408">
+              <caret line="65" column="13" lean-forward="false" selection-start-line="65" selection-start-column="13" selection-end-line="65" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -135,10 +122,10 @@
         <option value="$PROJECT_DIR$/core/Operations.py" />
         <option value="$PROJECT_DIR$/core/utils.py" />
         <option value="$PROJECT_DIR$/data/upper_tags.json" />
-        <option value="$PROJECT_DIR$/data/all.json" />
         <option value="$PROJECT_DIR$/data/products.json" />
-        <option value="$PROJECT_DIR$/core/Ocr.py" />
         <option value="$PROJECT_DIR$/exp.py" />
+        <option value="$PROJECT_DIR$/core/Ocr.py" />
+        <option value="$PROJECT_DIR$/data/all.json" />
       </list>
     </option>
   </component>
@@ -630,10 +617,18 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/all.json">
+    <entry file="file://$PROJECT_DIR$/LICENSE">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="10" column="19" lean-forward="true" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-151">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -657,50 +652,43 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/data/all.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="65" column="13" lean-forward="false" selection-start-line="65" selection-start-column="13" selection-end-line="65" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/core/Ocr.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="222" column="47" lean-forward="false" selection-start-line="222" selection-start-column="47" selection-end-line="222" selection-end-column="47" />
+        <state relative-caret-position="736">
+          <caret line="187" column="24" lean-forward="true" selection-start-line="187" selection-start-column="24" selection-end-line="187" selection-end-column="24" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
-            <element signature="e#498#1337#0" expanded="false" />
-            <element signature="e#1390#1618#0" expanded="false" />
-            <element signature="e#1669#1806#0" expanded="false" />
-            <element signature="e#3164#3385#0" expanded="false" />
-            <element signature="e#3429#3778#0" expanded="false" />
-            <element signature="e#3818#4436#0" expanded="false" />
-            <element signature="e#4471#5816#0" expanded="false" />
-            <element signature="e#8055#8815#0" expanded="false" />
-            <element signature="e#8855#9790#0" expanded="false" />
-            <element signature="e#9860#10905#0" expanded="false" />
-            <element signature="e#10942#12227#0" expanded="false" />
-            <element signature="e#12262#12417#0" expanded="false" />
-            <element signature="e#12455#13717#0" expanded="false" />
-            <element signature="e#13776#14419#0" expanded="false" />
-            <element signature="e#14478#15009#0" expanded="false" />
-            <element signature="e#15070#15271#0" expanded="false" />
-            <element signature="e#15327#15646#0" expanded="false" />
-            <element signature="e#15687#15845#0" expanded="false" />
-            <element signature="e#15898#17217#0" expanded="false" />
-            <element signature="e#17272#18716#0" expanded="false" />
-            <element signature="e#18769#20998#0" expanded="false" />
+            <element signature="e#527#1366#0" expanded="false" />
+            <element signature="e#1419#1647#0" expanded="false" />
+            <element signature="e#1698#1835#0" expanded="false" />
+            <element signature="e#3532#3753#0" expanded="false" />
+            <element signature="e#3797#4146#0" expanded="false" />
+            <element signature="e#4186#4804#0" expanded="false" />
+            <element signature="e#4839#6184#0" expanded="false" />
+            <element signature="e#7563#8124#0" expanded="false" />
+            <element signature="e#8419#9179#0" expanded="false" />
+            <element signature="e#9219#10154#0" expanded="false" />
+            <element signature="e#10224#11269#0" expanded="false" />
+            <element signature="e#11306#12591#0" expanded="false" />
+            <element signature="e#12626#12781#0" expanded="false" />
+            <element signature="e#12819#14081#0" expanded="false" />
+            <element signature="e#14140#14783#0" expanded="false" />
+            <element signature="e#14842#15373#0" expanded="false" />
+            <element signature="e#15434#15635#0" expanded="false" />
+            <element signature="e#15691#16010#0" expanded="false" />
+            <element signature="e#16051#16209#0" expanded="false" />
+            <element signature="e#16262#17581#0" expanded="false" />
+            <element signature="e#17636#19080#0" expanded="false" />
+            <element signature="e#19133#21362#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/LICENSE">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-151">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>

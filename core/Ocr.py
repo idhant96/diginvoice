@@ -3,6 +3,8 @@ import json
 from enchant import DictWithPWL
 from enchant.checker import SpellChecker
 import enchant
+from fuzzywuzzy import fuzz
+
 import cv2
 from google.cloud import vision
 from google.cloud.vision import types
@@ -100,6 +102,13 @@ class Ocr:
                             for element in self.dic:
                                 if suggest == element:
                                     return element
+                    smalls = ['2ML', 'KIT']
+                    for element in self.dic:
+                        if fuzz.ratio(e_word, element) > 65:
+                            return element
+                    for element in smalls:
+                        if fuzz.ratio(e_word, element) > 0:
+                            return element
                     return None
         else:
             return None
@@ -181,10 +190,10 @@ class Ocr:
                 if word:
                     new_text = new_text + word + ' '
         self.formatted_text = new_text
-        # print(self.formatted_text)
+        print(self.formatted_text)
 
     def find_products(self, products):
-        # print(self.doc_all_text)
+        print(self.doc_all_text)
         result = []
         for product in products:
             expression = ''
