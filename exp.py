@@ -1,5 +1,6 @@
 # import package
 from core.Ocr import Ocr
+import sys
 from core.Operations import Operations
 import cv2
 # create OCR instance
@@ -17,7 +18,8 @@ x.load_spellings(spells)
 # x.document_detection()
 # x.format_doctext()
 # x.get_props()
-x.get_products('images/invoices/more', products)
+# x.get_products('images/invoices/more', products)
+x.get_products_image(sys.argv[1], products)
 # cropped  = x.get_roi(data1)
 # cv2.imwrite("{}.png".format('temp'), cropped)
 # x.set_image('temp.png')

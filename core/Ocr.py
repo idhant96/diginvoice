@@ -170,7 +170,7 @@ class Ocr:
 
     def format_doctext(self):
         new_text = ''
-        # print(self.doc_all_text)
+        print(self.doc_all_text)
         for text in self.doc_all_text:
             text = self.__cleaner(text)
             text = text.upper()
@@ -181,7 +181,7 @@ class Ocr:
                 if word:
                     new_text = new_text + word + ' '
         self.formatted_text = new_text
-        print(self.formatted_text)
+        # print(self.formatted_text)
 
     def find_products(self, products):
         # print(self.doc_all_text)
@@ -213,7 +213,6 @@ class Ocr:
         for path in paths:
             # if not path == 'images/invoices/more/IMG_20180105_181004896.jpg':
             #     continue
-
             self.set_image(path)
             self.document_detection()
             self.format_doctext()
@@ -221,6 +220,13 @@ class Ocr:
             print('{}: '.format(path), result)
             print()
 
+    def get_products_image(self, path, products):
+        self.set_image(path)
+        self.document_detection()
+        self.format_doctext()
+        result = self.find_products(products)
+        print('{}: '.format(path), result)
+        print()
 
     def get_roi(self, region_data):
         print('getting roi ')
@@ -477,7 +483,6 @@ class Ocr:
         except IndexError:
             # print('Exception Handled')
             return final
-
 
     def add_missing_gst(self, subtext=None):
         final = ''
