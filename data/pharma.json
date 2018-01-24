@@ -1,0 +1,20 @@
+{
+  "pharma_list":{
+  "ARYA MEDICAL AGENCY" : {
+    "GSTIN": "10ADPPA2292L1Z0",
+    "DLNO": "20/20A"
+  },
+    "SHREE PHARMA" : {
+      "GSTIN": "10ADOPA4968C1Z5",
+      "DLNO": "76/76A"
+    },
+    "NEW MAA BHAVANI PHARMA":{
+      "GSTIN": "10ADOPB0076A1ZH",
+      "DLNO": "505/505A"
+    },
+    "SOMYA ENTERPRISES" : {
+      "GSTIN": "10BSKPB2548B1ZI",
+      "DLNO" : "29/29A"
+    }
+}
+}
