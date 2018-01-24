@@ -1,2 +1,3 @@
-from core import Ocr
-from core import Operations
+from core.ocr import *
+from core.spells import *
+from core.utils import *

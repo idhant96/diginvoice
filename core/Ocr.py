@@ -4,18 +4,12 @@ from enchant import DictWithPWL
 from enchant.checker import SpellChecker
 import enchant
 from fuzzywuzzy import fuzz
-
 import cv2
 from google.cloud import vision
 from google.cloud.vision import types
 import re
 import os
 import sys
-
-'''
-to Jay Sir
-Functions needs to be distributed
-'''
 
 
 class Ocr:
@@ -67,7 +61,7 @@ class Ocr:
 
     @staticmethod
     def __cleaner(st):
-        # print('text cleaning')
+        # print('texts cleaning')
         st = st.encode('ascii', 'ignore').decode('utf-8')
         return re.sub(r'[(?|$|,+''"”*#:|!)]', r'', st)
 
@@ -103,9 +97,6 @@ class Ocr:
                                 if suggest == element:
                                     return element
                     smalls = ['2ML', 'KIT']
-                    for element in self.dic:
-                        if fuzz.ratio(e_word, element) > 65:
-                            return element
                     for element in smalls:
                         if fuzz.ratio(e_word, element) > 0:
                             return element
@@ -134,7 +125,7 @@ class Ocr:
 
     def text_detection(self):
         """
-        detect text from the image
+        detect texts from the image
         :return:
         """
         # print(self.image_path)
@@ -142,11 +133,11 @@ class Ocr:
         with io.open(self.image_path, 'rb') as image_file:
             data = image_file.read()
         vision_image = types.Image(content=data)
-        # detect text
+        # detect texts
         response = Ocr.google_vision_client.text_detection(image=vision_image)
         self.annotations = response.text_annotations
         self.all_text = self.annotations[0].description.split('\n')
-        # print('text detection')
+        # print('texts detection')
         # print(self.all_text)
         # print(block_words)
 
@@ -203,14 +194,20 @@ class Ocr:
             if re.findall(r'{}'.format(expression), self.formatted_text):
                 # print('regex result: ', product)
                 result.append(product)
-        # print(text)
-        # for word in self.formatted_text.split(' '):
-        #     if word:
-        #         word = self.__spell_check(word)
-        #         for product in products:
-        #             if product == word:
-        #                 # print('normal result: ', word)
-        #                 result.append(word)
+        most = []
+        less = []
+        for element in products:
+            for text in self.doc_all_text:
+                if fuzz.ratio(text, element) > 65:
+                    # print('most probable product: ', element)
+                    if element not in most:
+                        most.append(element)
+                elif fuzz.ratio(text, element) > 10:
+                    # print('less probabale product: ', element)
+                    if element not in less:
+                        less.append(element)
+        print(most)
+        print(less)
         return result
 
     def get_products(self,  directory, products):
@@ -242,10 +239,10 @@ class Ocr:
         print(self.text_props)
         for text in self.text_props.keys():
             text = self.__spell_check(text)
-            # print(text)
+            # print(texts)
             for element in region_data:
                 if any(text == x for x in self.crop_hints):
-                    # print(text)
+                    # print(texts)
                     self.y_min = self.text_props[text][0][1]
                 if text == element:
                     # stores the TL y coordinate and BR y coordinates
@@ -352,7 +349,7 @@ class Ocr:
         # print(self.all_text)
         # self.get_columns(self.titles)
         # sys.exit('done')
-        print('all text')
+        print('all texts')
         print(self.all_text)
         # sys.exit('done')
         for x in self.crop_hints:
@@ -431,6 +428,16 @@ class Ocr:
             return ''.join(re.findall(r'\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}', word))
         else:
             return None
+
+    @staticmethod
+    def get_true_gst(pharma):
+        with open('data/pharma.json') as fh:
+            data = json.load(fh)
+        data = data['pharma_list']
+        for key in data.keys():
+            if key == pharma:
+                return data[key]['GSTIN'], data[key]['DLNO']
+        return None
 
     @staticmethod
     def probable_gst(word):
@@ -539,24 +546,25 @@ class Ocr:
         return final
 
     def get_gst_inv_date(self, directory):
-        paths = []
-        for root, _, files in os.walk("{}".format(directory)):
-            for file in files:
-                if file.endswith(".jpg"):
-                    paths.append(os.path.join(root, file))
+        # paths = []
+        # for root, _, files in os.walk("{}".format(directory)):
+        #     for file in files:
+        #         if file.endswith(".jpg"):
+        #             paths.append(os.path.join(root, file))
         # print(paths)
+        paths = directory
         results = {}
         results["invoices"] = {}
-        for path in paths:
+        if paths:
             # if not path == 'images/invoices/batch3/IMG_20180115_120856634_HDR.jpg':
             #     continue
             # input('process {}?'.format(path))
-            self.set_image(path)
+            self.set_image(paths)
             # print(path)
             # self.text_detection()
             self.document_detection()
-            print(self.doc_all_text)
-            result = results["invoices"][path] = {}
+            # print(self.doc_all_text)
+            result = results["invoices"][paths] = {}
             dlno = result["DLNO"] = {}
             gstin = result["GSTIN"] = {}
             date = result["INV DATE"] = {}
@@ -582,44 +590,44 @@ class Ocr:
                             gstin[prob_gst] = False
 
                 if re.findall(r'\d+\/\d+A', text):
-                    dlno[''.join(re.findall(r'\d+\/\d+A', text))] = True
+                    dlno[''.join(re.findall(r'\d+\/\d+[\s]*A', text))] = True
                 elif re.findall(r'\d+\/\d+\/\d+', text):
                     date[''.join(re.findall(r'\d+\/\d+\/\d+', text))] = True
         print(results)
 
-    # def cropper_x(self, name):
-    #     crop_img = self.image[:self.y_max, self]
-    #     cv2.imwrite("{}.png".format(name), crop_img)
+    def cropper_x(self, name):
+        crop_img = self.image[:self.y_max, self]
+        cv2.imwrite("{}.png".format(name), crop_img)
 
-    # def __select_roi(self):
-    #     for block in self.blocks:
-    #         self.content[block.description] = [(block.bounding_poly.vertices[0].x, block.bounding_poly.vertices[0].y),
-    #                                            (block.bounding_poly.vertices[2].x, block.bounding_poly.vertices[2].y)]
-    #
-    # def getMarkerPoints(self):
-    #     '''
-    #     detects and itereates the text found by api and stores the text and vertices in a dictionary
-    #     for storing marking the ROI only
-    #     '''
-    #     # print('lol')
-    #     for block in self.blocks:
-    #         self.content[block.description] = [(block.bounding_poly.vertices[0].x, block.bounding_poly.vertices[0].y),
-    #                                            (block.bounding_poly.vertices[2].x, block.bounding_poly.vertices[2].y)]
-    #     if self.content is not None:
-    #         return True, self.content
-    #     return False, self.content
-    #
-    # def getCropperPoints(self):
-    #     '''
-    #     detects and itereates the text found by api and stores the text and vertices in a dictonary
-    #     for cropping text
-    #     '''
-    #     for block in self.blocks:
-    #         self.content[block.description] = [(block.bounding_poly.vertices[0].x, block.bounding_poly.vertices[0].y),
-    #                                            (block.bounding_poly.vertices[
-    #                                                 1].x, block.bounding_poly.vertices[1].y),
-    #                                            (block.bounding_poly.vertices[
-    #                                                 2].x, block.bounding_poly.vertices[2].y),
-    #                                            (block.bounding_poly.vertices[3].x, block.bounding_poly.vertices[3].y)]
-    #     return self.content
-    #
+    def __select_roi(self):
+        for block in self.blocks:
+            self.content[block.description] = [(block.bounding_poly.vertices[0].x, block.bounding_poly.vertices[0].y),
+                                               (block.bounding_poly.vertices[2].x, block.bounding_poly.vertices[2].y)]
+
+    def getMarkerPoints(self):
+        '''
+        detects and itereates the texts found by api and stores the texts and vertices in a dictionary
+        for storing marking the ROI only
+        '''
+        # print('lol')
+        for block in self.blocks:
+            self.content[block.description] = [(block.bounding_poly.vertices[0].x, block.bounding_poly.vertices[0].y),
+                                               (block.bounding_poly.vertices[2].x, block.bounding_poly.vertices[2].y)]
+        if self.content is not None:
+            return True, self.content
+        return False, self.content
+
+    def getCropperPoints(self):
+        '''
+        detects and itereates the texts found by api and stores the texts and vertices in a dictonary
+        for cropping texts
+        '''
+        for block in self.blocks:
+            self.content[block.description] = [(block.bounding_poly.vertices[0].x, block.bounding_poly.vertices[0].y),
+                                               (block.bounding_poly.vertices[
+                                                    1].x, block.bounding_poly.vertices[1].y),
+                                               (block.bounding_poly.vertices[
+                                                    2].x, block.bounding_poly.vertices[2].y),
+                                               (block.bounding_poly.vertices[3].x, block.bounding_poly.vertices[3].y)]
+        return self.content
+
