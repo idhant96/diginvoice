@@ -54,6 +54,7 @@ class Helpers(object):
         for text in doc_all_text:
             text = Utils.cleaner(text)
             text = text.upper()
+            text = text.replace('/', ' ')
             text = text.replace('.', '')
             for word in text.split(' '):
                 if word:
@@ -61,6 +62,7 @@ class Helpers(object):
                 if word:
                     new_text = new_text + word + ' '
         formatted_text = new_text
+        print(formatted_text)
         return formatted_text
 
     @classmethod
@@ -79,7 +81,8 @@ class Helpers(object):
             for text in doc_all_text:
                 if fuzz.ratio(text, element) > 65:
                     if element not in most:
-                        most.append(element)
+                        if element not in result:
+                            most.append(element)
                 elif fuzz.ratio(text, element) > 10:
                     if element not in less:
                         less.append(element)

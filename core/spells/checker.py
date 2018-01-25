@@ -16,12 +16,11 @@ class Checker(object):
         cls.dictionary = DictWithPWL("en_US")
         cls.checker = SpellChecker(cls.dictionary)
         cls.personal = enchant.Dict()
-        # Adding the personal words to dict
         for element in data:
             cls.personal.add(element)
 
     @classmethod
-    def spell_check(cls, e_word):
+    def spell_check(cls, e_word, type=None):
         if e_word == '.':
             return None
         e_word = Utils.cleaner(e_word)
@@ -34,11 +33,23 @@ class Checker(object):
                             for element in cls.dic:
                                 if suggest == element:
                                     return element
-                    smalls = ['2ML', 'KIT']
-                    for element in smalls:
-                        if fuzz.ratio(e_word, element) > 0:
-                            return element
-                    return None
+                    target = ''
+                    mratio = 0
+                    if type:
+                        for element in cls.dic:
+                            ratio = fuzz.ratio(e_word, element)
+                            if ratio > 0 and ratio > mratio:
+                                mratio = ratio
+                                target = element
+                        return target
+                    else:
+                        smalls = ['2ML', 'KIT', '500MG', 'TAB']
+                        for element in smalls:
+                            ratio = fuzz.ratio(e_word, element)
+                            if ratio > 0 and ratio > mratio:
+                                target = element
+                                mratio = ratio
+                        return target
         else:
             return None
         return e_word

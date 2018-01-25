@@ -113,7 +113,7 @@ class Utils(object):
 
     @classmethod
     def get_data(cls, file_name, obj):
-        with open('data/{}.json'.format(file_name)) as fh:
+        with open('{}.json'.format(file_name)) as fh:
             data = json.load(fh)
         return data['{}'.format(obj)]
 
