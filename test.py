@@ -1,24 +1,19 @@
-from google.cloud import vision
-from google.cloud.vision import types
-import cv2
-import io
+from core.texts import Text
+from core.ocr import Ocr
+from core.utils import Utils
+from core.spells import Checker
+import sys
 
+all = Utils.get_data('data/all', 'all')
+Checker.load_spellings(all)
 
-google_vision_client = vision.ImageAnnotatorClient()
-image = cv2.imread('{}'.format('invoices/invoice1.jpg'))
-with io.open("{}".format('invoices/invoice1.jpg'), 'rb') as image_file:
-    data = image_file.read()
-prep_image = types.Image(content=data)
+products = Utils.get_data('data/products', 'products')
+path = sys.argv[1]
+_, doc_all_text = Ocr.document_detection(path)
+print(doc_all_text)
+results = Text.get_gst_dlno_date(path, doc_all_text)
+fproducts = Text.get_products_image(products, doc_all_text)
 
-
-response = google_vision_client.text_detection(image=prep_image)
-texts = response.text_annotations
-
-for text in texts:
-    print(text.description)
-    # print('\n"{}"'.format(text.description))
-
-    vertices = (['({},{})'.format(vertex.x, vertex.y)
-                for vertex in text.bounding_poly.vertices])
-
-    print('bounds: {}'.format(','.join(vertices)))
+print(results)
+print()
+print(fproducts)

@@ -20,7 +20,7 @@ class Ocr(object):
         cls.image_path = '{}'.format(img)
         data = cls.get_data(cls.image_path)
         vision_image = types.Image(content=data)
-        response = Ocr.google_vision_client.document_text_detection(image=vision_image)
+        response = cls.google_vision_client.document_text_detection(image=vision_image)
         annotations = response.text_annotations
         doc_all_text = annotations[0].description.split('\n')
         return annotations, doc_all_text
