@@ -1,13 +1,13 @@
 import pandas as pd
 import re
 import distance
-import sys
 
 
 class Big(object):
     bigdata = pd.read_csv(
-        'csvs/big_docs.csv'
+        'csvs/small_docs.csv'
     )
+    bigdata = bigdata.fillna('')
     specs_names = {}
     for _, obj in bigdata.iterrows():
         obj.FIRST_NAME = re.sub(' +',' ',obj.DoctorName)
@@ -34,17 +34,19 @@ class Big(object):
         print(spec)
         print(names)
         # sys.exit()
-        input(''.format(spec))
+        input('first lol')
         for name1 in names:
             for name2 in names:
-                print(name1, name2)
+                # print(name1, name2)
                 if names.index(name1) != names.index(name2):
                     q = name1.replace('.', ' ')
                     w = name2.replace('.', ' ')
                     words1 = q.split(' ')
                     words2 = w.split(' ')
+                    print(name1, name2)
                     jac = 1 - distance.jaccard(name1.upper(), name2.upper())
                     if jac > 0.75:
+                        input('entered')
                         # print(name1, name2)
                         score = 55
                         pos1 = bigdata['DoctorName'][bigdata['DoctorName'] == name1].index[0]
@@ -53,15 +55,21 @@ class Big(object):
                         # sys.exit()
                         gender1 = bigdata['Sex'].iloc[pos1]
                         gender2 = bigdata['Sex'].iloc[pos2]
+                        print(gender1, gender2)
                         if gender1 == gender2:
                             score = score + 15
                         age1 = bigdata['Age'].iloc[pos1]
                         age2 = bigdata['Age'].iloc[pos2]
+                        print(age1, age2)
                         if age1 == age2:
                             score = score + 15
-                        zone1 = bigdata['City'].iloc[pos1]
-                        zone2 = bigdata['City'].iloc[pos2]
+                        zone1 = bigdata['CityName'].iloc[pos1]
+                        zone2 = bigdata['CityName'].iloc[pos2]
+                        print(zone1, zone2)
                         if zone1 == zone2:
                             score = score + 15
+                        print(score)
+                        input('scheck score')
                         if score > 80:
                             print(name1, name2, score, pos1, pos2)
+                            input('lol')
