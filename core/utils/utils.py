@@ -1,6 +1,5 @@
 import json
 import re
-import cv2
 
 
 class Utils(object):

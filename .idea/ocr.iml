@@ -4,6 +4,9 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="Python 3.6 (idhantcv)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="medialytics" />
+    <orderEntry type="module" module-name="medialytics" />
+    <orderEntry type="module" module-name="scripts" />
   </component>
   <component name="PyDocumentationSettings">
     <option name="renderExternalDocumentation" value="true" />

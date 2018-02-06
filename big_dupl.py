@@ -5,9 +5,9 @@ from fuzzywuzzy import fuzz
 
 class Big(object):
     bigdata = pd.read_csv(
-        'csvs/big_docs.csv'
+        'csvs/snall_docs.csv'
     )
-    fl = open('result.txt', 'w')
+    fl = open('result2.txt', 'w')
     bigdata = bigdata.fillna('')
     specs_names = {}
     for _, obj in bigdata.iterrows():
