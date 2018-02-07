@@ -65,7 +65,6 @@ class Big(object):
 
     @classmethod
     def lol(self, bigdata, writer):
-        bigdata = bigdata.fillna('')
         for pos1, obj1 in bigdata.iterrows():
             s = ''
             name1 = obj1['name']
