@@ -3,7 +3,7 @@ import pandas as pd
 
 
 bigdata = pd.read_excel(
-            'MOCK_DATA.xlsx'
+            'csvs/bigdata.xlsx'
         )
 writer = pd.ExcelWriter('Mock_result.xlsx')
 bigdata = bigdata.fillna('')
