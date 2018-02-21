@@ -62,15 +62,17 @@ class Big(object):
 
     @classmethod
     def dup(self, bigdata):
+        # print('started')
         # startTime = time.time() * 1000
         for pos1, obj1 in bigdata.iterrows():
             s = ''
             name1 = obj1['name']
             bigdata.set_value(pos1, 'MatchSearchName', name1)
             for pos2, obj2 in bigdata.iterrows():
+                # print('reached')
                 if pos1 < pos2:
                     name2 = obj2['name']
-                    # print(name1, name2)
+                    print(name1)
                     name = self.name_matcher(name1, name2, 40)
                     # print('on 40', name)
                     # input('check')
