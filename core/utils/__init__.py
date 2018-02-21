@@ -1,2 +1,3 @@
 from .utils import Utils
-from .big_dupl2 import Big
+from .new import Big
+from .old import Big

@@ -1,4 +1,5 @@
 from fuzzywuzzy import process
+# import time
 
 
 class Big(object):
@@ -60,15 +61,14 @@ class Big(object):
         return score+name, flag
 
     @classmethod
-    def dup(self, chunk1, chunk2):
-        p = {}
+    def dup(self, bigdata):
         # print('started')
         # startTime = time.time() * 1000
-        for pos1, obj1 in chunk1.iterrows():
+        for pos1, obj1 in bigdata.iterrows():
             s = ''
             name1 = obj1['name']
-            chunk1.set_value(pos1, 'MatchSearchName', name1)
-            for pos2, obj2 in chunk2.iterrows():
+            bigdata.set_value(pos1, 'MatchSearchName', name1)
+            for pos2, obj2 in bigdata.iterrows():
                 # print('reached')
                 if pos1 < pos2:
                     name2 = obj2['name']
@@ -80,25 +80,24 @@ class Big(object):
                         if obj1['mobile'] == obj2['mobile'] or obj2['email'] == obj1['email']:
                             score, flag = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=40)
                             if score >= 90 or flag > 0:
-                                # s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city']\
-                                #     + ' ' + obj2['city'] + ' ' + str(obj1['mobile']) + ' ' + str(obj2['mobile']) + ' ' + \
-                                #     obj1['speciality'] + ' ' + obj2['speciality'] + ' ' + obj1['gender'] + ' ' + \
-                                #     obj2['gender'] + str(score) + ' '
-                                s = s + str(pos2)
+                                s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city']\
+                                    + ' ' + obj2['city'] + ' ' + str(obj1['mobile']) + ' ' + str(obj2['mobile']) + ' ' + \
+                                    obj1['speciality'] + ' ' + obj2['speciality'] + ' ' + obj1['gender'] + ' ' + \
+                                    obj2['gender'] + str(score) + ' '
+                                bigdata.set_value(pos1, 'match', s)
                             # input('check')
                     elif name >= 32:
                         score, flag = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=40)
                         # print('>=32', name1, name2, score)
                         if score >= 90 or flag > 0:
-                            # s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city'] \
-                            #     + ' ' + obj2['city'] + ' ' + str(obj1['mobile']) + ' ' + str(obj2['mobile']) + ' ' + \
-                            #     obj1['speciality'] + ' ' + obj2['speciality'] + ' ' + obj1['gender'] + ' ' + \
-                            #     obj2['gender'] + str(score) + ' '
-                            s = s + str(pos2)
+                            s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city'] \
+                                + ' ' + obj2['city'] + ' ' + str(obj1['mobile']) + ' ' + str(obj2['mobile']) + ' ' + \
+                                obj1['speciality'] + ' ' + obj2['speciality'] + ' ' + obj1['gender'] + ' ' + \
+                                obj2['gender'] + str(score) + ' '
+                            bigdata.set_value(pos1, 'match', s)
                             # result = (pos1, s)
-            if s:
-                p[pos1] = s           # input('check')
+                        # input('check')
         # print('dup ', time.time() * 1000 - startTime)
-        return p
+        return bigdata
 
 
