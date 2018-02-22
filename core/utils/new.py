@@ -1,7 +1,24 @@
 from fuzzywuzzy import process
+import multiprocessing
+import pandas as pd
 
 
 class Big(object):
+    @classmethod
+    def get_pos(self, file_path):
+        df = pd.read_excel(file_path)
+        df = df.fillna('')
+        num_processes = multiprocessing.cpu_count() - 1
+        chunk_size = int(df.shape[0] / num_processes)
+        chunks = [df.ix[df.index[i:i + chunk_size]] for i in range(0, df.shape[0], chunk_size)]
+        pool = multiprocessing.Pool(processes=num_processes)
+        objects = []
+        for i in range(len(chunks)):
+            for j in range(len(chunks)):
+                if i < j:
+                    objects.append((chunks[i], chunks[j]))
+        return pool.starmap(self.dup, objects)
+
     @staticmethod
     def name_matcher(name1, name2, total):
         # startTime = time.time() * 1000
@@ -65,12 +82,12 @@ class Big(object):
         # print('started')
         # startTime = time.time() * 1000
         for pos1, obj1 in chunk1.iterrows():
-            s = ''
+            s = []
             name1 = obj1['name']
             chunk1.set_value(pos1, 'MatchSearchName', name1)
             for pos2, obj2 in chunk2.iterrows():
                 # print('reached')
-                if pos1 < pos2:
+                if obj1['Doctor Code'] != obj2['Doctor Code']:
                     name2 = obj2['name']
                     # print(name1)
                     name = self.name_matcher(name1, name2, 40)
@@ -80,24 +97,28 @@ class Big(object):
                         if obj1['mobile'] == obj2['mobile'] or obj2['email'] == obj1['email']:
                             score, flag = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=40)
                             if score >= 90 or flag > 0:
+
                                 # s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city']\
                                 #     + ' ' + obj2['city'] + ' ' + str(obj1['mobile']) + ' ' + str(obj2['mobile']) + ' ' + \
                                 #     obj1['speciality'] + ' ' + obj2['speciality'] + ' ' + obj1['gender'] + ' ' + \
                                 #     obj2['gender'] + str(score) + ' '
-                                s = s + str(pos2)
+                                # s = s + ' ' + str(pos2)
+                                s.append(obj2['Doctor Code'])
                             # input('check')
+
                     elif name >= 32:
                         score, flag = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=40)
                         # print('>=32', name1, name2, score)
                         if score >= 90 or flag > 0:
+                            s.append(obj2['Doctor Code'])
                             # s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city'] \
                             #     + ' ' + obj2['city'] + ' ' + str(obj1['mobile']) + ' ' + str(obj2['mobile']) + ' ' + \
                             #     obj1['speciality'] + ' ' + obj2['speciality'] + ' ' + obj1['gender'] + ' ' + \
                             #     obj2['gender'] + str(score) + ' '
-                            s = s + str(pos2)
+                            # s = s + str(pos2) + ' '
                             # result = (pos1, s)
             if s:
-                p[pos1] = s           # input('check')
+                p[obj1['Doctor Code']] = s
         # print('dup ', time.time() * 1000 - startTime)
         return p
 
