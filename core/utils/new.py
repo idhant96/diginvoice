@@ -48,13 +48,10 @@ class Big(object):
         name2 = obj2['name']
         name = score
         score = 0
-        flag = 0
         ch, score = self.checker(obj1['email'], obj2['email'], score=score, ad=20)
         if not ch:
             change = change + 20
             name = self.name_matcher(name1, name2, change)
-        else:
-            flag = flag + 1
         ch, score = self.checker(obj1['city'], obj2['city'], score=score, ad=10)
         if not ch:
             change = change + 10
@@ -71,10 +68,8 @@ class Big(object):
         if not ch:
             change = change + 15
             name = self.name_matcher(name1, name2, change)
-        else:
-            flag = flag + 1
         # print('field_checkr ', time.time() * 1000 - startTime)
-        return score+name, flag
+        return score+name
 
     @classmethod
     def dup(self, chunk1, chunk2):
@@ -84,7 +79,6 @@ class Big(object):
         for pos1, obj1 in chunk1.iterrows():
             s = []
             name1 = obj1['name']
-            chunk1.set_value(pos1, 'MatchSearchName', name1)
             for pos2, obj2 in chunk2.iterrows():
                 # print('reached')
                 if obj1['Doctor Code'] != obj2['Doctor Code']:
@@ -95,8 +89,8 @@ class Big(object):
                     # input('check')
                     if 16 < name < 32:
                         if obj1['mobile'] == obj2['mobile'] or obj2['email'] == obj1['email']:
-                            score, flag = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=40)
-                            if score >= 90 or flag > 0:
+                            score = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=40)
+                            if score >= 90:
 
                                 # s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city']\
                                 #     + ' ' + obj2['city'] + ' ' + str(obj1['mobile']) + ' ' + str(obj2['mobile']) + ' ' + \
@@ -107,9 +101,9 @@ class Big(object):
                             # input('check')
 
                     elif name >= 32:
-                        score, flag = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=40)
+                        score = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=40)
                         # print('>=32', name1, name2, score)
-                        if score >= 90 or flag > 0:
+                        if score >= 90:
                             s.append(obj2['Doctor Code'])
                             # s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city'] \
                             #     + ' ' + obj2['city'] + ' ' + str(obj1['mobile']) + ' ' + str(obj2['mobile']) + ' ' + \
