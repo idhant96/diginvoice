@@ -1,13 +1,23 @@
 from core.utils.new import Big
 import pandas as pd
 import time
+import mysql.connector
 import sys
 
 
-path = sys.argv[1]
-odf = pd.read_excel(path)
+fmt = sys.argv[1]
+path = sys.argv[2]
+odf = None
+if fmt == 'excel':
+    odf = pd.read_excel(path)
+elif fmt == 'sql':
+    con = mysql.connector.connect(user='root',
+                                  password='idhant',
+                                  host='127.0.0.1',
+                                  database='goapptiv')
+    odf = pd.read_sql_query('select * from {}'.format(path), con=con)
 startTime = time.time() * 1000
-result = Big.process_dataframe(path)
+result = Big.process_dataframe(odf)
 # df['MatchSearchName'] = ''
 # df['match'] = ''
 # print(result)
@@ -30,10 +40,6 @@ for gender in result:
                 df = df.append(odf.loc[odf['Doctor Code'] == pos1])
                 df = df.append(odf.loc[odf['Doctor Code'] == pos2])
                 added.append((pos1, pos2))
-
-
-            # df.at[pos1, 'MatchSearchName'] = df.iloc[pos1, 2]
-            # df.at[pos1, 'match'] = p[pos1]
 print(added)
 df.to_excel(writer, 'sheet1')
 writer.save()

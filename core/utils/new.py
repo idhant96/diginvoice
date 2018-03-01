@@ -1,7 +1,6 @@
 from fuzzywuzzy import process
 import multiprocessing
 import pandas as pd
-import sys
 import re
 
 
@@ -19,20 +18,21 @@ class Big(object):
         return objects
 
     @classmethod
-    def process_dataframe(self, file_path):
+    def process_dataframe(self, df):
         result = []
-        df = pd.read_excel(file_path)
         df = df.fillna('')
         num_processes = multiprocessing.cpu_count() - 1
         pool = multiprocessing.Pool(processes=num_processes)
         male = df.loc[df['gender'] == 'Male']
         female = df.loc[df['gender'] == 'Female']
         male_chunks = self.chunker(male, num_processes)
+        print(male.shape[0])
         result.append(pool.starmap(self.dup, male_chunks))
-        # print('male done')
+        print('male done')
         female_chunks = self.chunker(female, num_processes)
+        print(female.shape[0])
         result.append(pool.starmap(self.dup, female_chunks))
-        # print('female done')
+        print('female done')
         # print(result)
         return result
 
@@ -125,7 +125,7 @@ class Big(object):
             name1 = obj1['name']
             for pos2, obj2 in chunk2.iterrows():
                 # print('reached')
-                if obj1['id'] != obj2['id'] and obj1['gender'] == obj2['gender'] and obj2['State'] == obj1['State']:
+                if obj1['id'] != obj2['id'] and obj2['State'] == obj1['State']:
                     name2 = obj2['name']
                     # print(name1)
                     n1 = re.findall(r'DR(\s|\.)(.+)', obj1['name'].upper())
