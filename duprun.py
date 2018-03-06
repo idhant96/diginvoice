@@ -5,7 +5,9 @@ import mysql.connector
 import sys
 
 
-cols = {'name': None, 'gender': None, 'age': None, 'city': None, 'speciality': None, 'mobile': None, 'email': None}
+# col_names = {'name': None, 'gender': None, 'age': None, 'city': None, 'speciality': None, 'mobile': None, 'email': None}
+col_names = {'id': 'id', 'name': 'name', 'gender': 'gender', 'age': 'age', 'city': 'city', 'speciality': 'speciality', 'mobile': 'mobile', 'email': 'email'}
+# col_scores = {}
 fmt = sys.argv[1]
 path = sys.argv[2]
 odf = None
@@ -18,22 +20,31 @@ elif fmt == 'sql':
                                   database='goapptiv')
     odf = pd.read_sql_query('select * from {}'.format(path), con=con)
 
-for col in cols.keys():
-    x = input('enter the score for {} - '.format(col))
-    if x is not '':
-        cols[col] = x
-x = input('please enter unique field name - ')
-if x is not '':
-    cols['id'] = x
+
+
+# for col in col_names.keys():
+#     x = input('enter the column name for {} - '.format(col))
+#     if x is not '':
+#         col_names[col] = x
+#         col_scores[col] = input('enter the {} score - '.format(x))
+# x = input('please enter unique field name - ')
+# if x is not '':
+#     col_names['id'] = x
+col_scores = {'email':15, 'age':15, 'city':10, 'gender':5, 'speciality':5, 'mobile':15}
+
+
 
 startTime = time.time() * 1000
-result = Big.process_dataframe(odf, cols)
+result = Big.process_dataframe(odf, col_scores, col_names)
 # df['MatchSearchName'] = ''
 odf['matchwith'] = ''
 df = pd.DataFrame(columns=list(odf.columns.values))
 # df = pd.DataFrame()
-writer = pd.ExcelWriter('500res.xlsx')
+writer = pd.ExcelWriter('500resnew.xlsx')
 added = []
+
+
+
 for gender in result:
     for p in gender:
         for pos1 in p.keys():
