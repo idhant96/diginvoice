@@ -1,10 +1,10 @@
 from fuzzywuzzy import process
 import multiprocessing
-import pandas as pd
 import re
 
 
 class Big(object):
+    columns = {}
     @staticmethod
     def chunker(df, num_processes):
         chunk_size = int(df.shape[0] / num_processes)
@@ -18,22 +18,25 @@ class Big(object):
         return objects
 
     @classmethod
-    def process_dataframe(self, df):
+    def process_dataframe(cls, df, cols):
+        cls.columns = cols
         result = []
         df = df.fillna('')
         num_processes = multiprocessing.cpu_count() - 1
         pool = multiprocessing.Pool(processes=num_processes)
-        male = df.loc[df['gender'] == 'Male']
-        female = df.loc[df['gender'] == 'Female']
-        male_chunks = self.chunker(male, num_processes)
-        print(male.shape[0])
-        result.append(pool.starmap(self.dup, male_chunks))
-        print('male done')
-        female_chunks = self.chunker(female, num_processes)
-        print(female.shape[0])
-        result.append(pool.starmap(self.dup, female_chunks))
-        print('female done')
-        # print(result)
+        if 'gender' in cols.keys():
+            male = df.loc[df['gender'] == 'Male']
+            female = df.loc[df['gender'] == 'Female']
+            male_chunks = cls.chunker(male, num_processes)
+            result.append(pool.starmap(cls.dup, male_chunks))
+            print('male done')
+            female_chunks = cls.chunker(female, num_processes)
+            print(female.shape[0])
+            result.append(pool.starmap(cls.dup, female_chunks))
+            print('female done')
+        else:
+            chunks = self.chunker(df, num_processes)
+            result.append(pool.starmap(self.dup, chunks))
         return result
 
     @staticmethod
@@ -65,16 +68,14 @@ class Big(object):
 
     @staticmethod
     def checker(field1, field2,  score, ad):
-        # startTime = time.time() * 1000
-        flag = 0
         if field1 == field2 == '':
-            return score, flag+1
+            return score
         if field1 == field2:
             score = score + ad
             # print('checker ', time.time() * 1000- startTime)
-            return score, flag
+            return score
         # print('checker ', time.time() * 1000 - startTime)
-        return score, flag
+        return score
 
     @classmethod
     def field_checker(self, obj1, obj2, score, change):
@@ -84,45 +85,27 @@ class Big(object):
             ab = 100 - ab
             for head in heads.keys():
                 heads[head] = 100 * (heads[head] / ab)
-        name1 = obj1['name']
-        name2 = obj2['name']
         name = score
         score = 0
-        score, flag = self.checker(obj1['email'], obj2['email'], score=score, ad=heads['email'])
-        # if flag > 0:
-        #     change = change + 10
-        #     name = self.name_matcher(name1, name2, change)
-        score, flag = self.checker(obj1['age'], obj2['age'], score=score, ad=heads['age'])
-        # if flag > 0:
-        #     change = change + 10
-        #     name = self.name_matcher(name1, name2, change)
-        score, flag = self.checker(obj1['city'], obj2['city'], score=score, ad=heads['city'])
-        # if flag > 0:
-        #     change = change + 10
-        #     name = self.name_matcher(name1, name2, change)
-        score, flag = self.checker(obj1['gender'], obj2['gender'], score=score, ad=heads['gender'])
-        # if flag > 0:
-        #     change = change + 5
-        #     name = self.name_matcher(name1, name2, change)
-        score, flag = self.checker(obj1['speciality'], obj2['speciality'], score=score, ad=heads['speciality'])
-        # if flag > 0:
-        #     change = change + 10
-        #     name = self.name_matcher(name1, name2, change)
-        score, flag = self.checker(obj1['mobile'], obj2['mobile'], score=score, ad=heads['mobile'])
-        # if flag > 0:
-        #     change = change + 15
-        #     name = self.name_matcher(name1, name2, change)
-        # print('field_checkr ', time.time() * 1000 - startTime)
+        score= self.checker(obj1['email'], obj2['email'], score=score, ad=heads['email'])
+        score= self.checker(obj1['age'], obj2['age'], score=score, ad=heads['age'])
+        score = self.checker(obj1['city'], obj2['city'], score=score, ad=heads['city'])
+        score = self.checker(obj1['gender'], obj2['gender'], score=score, ad=heads['gender'])
+        score = self.checker(obj1['speciality'], obj2['speciality'], score=score, ad=heads['speciality'])
+        score = self.checker(obj1['mobile'], obj2['mobile'], score=score, ad=heads['mobile'])
         return score, name
 
     @classmethod
-    def dup(self, chunk1, chunk2):
+    def dup(cls, chunk1, chunk2):
+        # name = str(cls.columns['name'])
+        # id = str(cls.columns['id'])
+        # age = str(cls.columns['age'])
+        # email = str(cls.columns['email'])
+
         p = {}
-        # print('started')
-        # startTime = time.time() * 1000
         for pos1, obj1 in chunk1.iterrows():
             s = []
-            name1 = obj1['name']
+            name1 = obj1[]
             for pos2, obj2 in chunk2.iterrows():
                 # print('reached')
                 if obj1['id'] != obj2['id'] and obj2['State'] == obj1['State']:
@@ -134,14 +117,14 @@ class Big(object):
                         name1 = n1[0][1]
                     if n2:
                         name2 = n2[0][1]
-                    name = self.name_matcher(name1, name2, 35)
+                    name = cls.name_matcher(name1, name2, 35)
                     # print('on 40', name)
                     # input('check')
                     if 14 < name < 30.1:
                         if obj1['mobile'] == obj2['mobile'] or obj2['email'] == obj1['email']:
                             if obj1['mobile'] == '' or obj1['email'] == '':
                                 continue
-                            score, name = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=35)
+                            score, name = cls.field_checker(obj1=obj1, obj2=obj2, score=name, change=35)
                             if score+name >= 80:
                                 print(obj1['id'], obj2['id'], score, name)
                                 # s = s + name1 + ' ' + name2 + ' ' + obj1['email'] + ' ' + obj2['email'] + ' ' + obj1['city']\
@@ -153,7 +136,7 @@ class Big(object):
                             # input('check')
 
                     elif name >= 30.2:
-                        score, name = self.field_checker(obj1=obj1, obj2=obj2, score=name, change=35)
+                        score, name = cls.field_checker(obj1=obj1, obj2=obj2, score=name, change=35)
                         # print('>=32', name1, name2, score)
                         if score+name >= 80:
                             print(obj1['id'],obj2['id'], score, name)

@@ -5,6 +5,7 @@ import mysql.connector
 import sys
 
 
+cols = {'name': None, 'gender': None, 'age': None, 'city': None, 'speciality': None, 'mobile': None, 'email': None}
 fmt = sys.argv[1]
 path = sys.argv[2]
 odf = None
@@ -16,13 +17,19 @@ elif fmt == 'sql':
                                   host='127.0.0.1',
                                   database='goapptiv')
     odf = pd.read_sql_query('select * from {}'.format(path), con=con)
-startTime = time.time() * 1000
-result = Big.process_dataframe(odf)
-# df['MatchSearchName'] = ''
-# df['match'] = ''
-# print(result)
-# cols = ['pos','name', 'email', 'mobile', 'gender', 'age', 'city', 'speciality']
 
+for col in cols.keys():
+    x = input('enter the score for {} - '.format(col))
+    if x is not '':
+        cols[col] = x
+x = input('please enter unique field name - ')
+if x is not '':
+    cols['id'] = x
+
+startTime = time.time() * 1000
+result = Big.process_dataframe(odf, cols)
+# df['MatchSearchName'] = ''
+odf['matchwith'] = ''
 df = pd.DataFrame(columns=list(odf.columns.values))
 # df = pd.DataFrame()
 writer = pd.ExcelWriter('500res.xlsx')
@@ -37,10 +44,13 @@ for gender in result:
                         flag = flag + 1
                 if flag > 0:
                     continue
-                df = df.append(odf.loc[odf['Doctor Code'] == pos1])
+                row = odf.loc[odf['Doctor Code'] == pos1]
+                row['matchwith'] = 'matched'
+                # odf.loc[pos1, 'matchwith'] = 'matched'
+                df = df.append(row)
                 df = df.append(odf.loc[odf['Doctor Code'] == pos2])
                 added.append((pos1, pos2))
-print(added)
+# print(added)
 df.to_excel(writer, 'sheet1')
 writer.save()
 print('complete ', time.time() * 1000 - startTime)
