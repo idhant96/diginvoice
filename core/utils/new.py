@@ -7,7 +7,7 @@ import sys
 
 class Big(object):
     col_scores = {}
-
+    scores = {}
     col_names = {}
     @staticmethod
     def chunker(df, num_processes):
@@ -29,14 +29,14 @@ class Big(object):
         df = df.fillna('')
         num_processes = multiprocessing.cpu_count() - 1
         pool = multiprocessing.Pool(processes=num_processes)
-        if 'gender' in col_names.keys():
+        if 'gender' in col_scores.keys():
             male = df.loc[df['gender'] == 'Male']
             female = df.loc[df['gender'] == 'Female']
             male_chunks = cls.chunker(male, num_processes)
             result.append(pool.starmap(cls.dup, male_chunks))
             print('male done')
             female_chunks = cls.chunker(female, num_processes)
-            print(female.shape[0])
+            # print(female.shape[0])
             result.append(pool.starmap(cls.dup, female_chunks))
             print('female done')
         else:
@@ -47,10 +47,12 @@ class Big(object):
 
     @staticmethod
     def name_matcher(name1, name2, total):
+        # print(total)
         # startTime = time.time() * 1000
         n = []
         n.append(name2.upper())
         match = process.extract(name1.upper(), n, limit=3)[0][1]
+        # print(match, total, type(total))
         score = (match/100)*total
         # print('name_matcher ', time.time() * 1000 - startTime)
         return score
@@ -59,21 +61,22 @@ class Big(object):
     def absent_fields(cls, obj1, obj2):
         ab = 0
         for col in cls.col_names.keys():
-            if cls.col_names[col] is not None:
+            if col in cls.col_scores.keys():
                 if obj1[cls.col_names[col]] == obj2[cls.col_names[col]] == '':
+                    # print(cls.col_scores[col])
                     ab = ab + cls.col_scores[col]
         return ab
 
     @staticmethod
     def checker(field1, field2, score, ad):
         if field1 == field2 == '':
-            return score, 1
+            return score
         if field1 == field2:
             score = score + ad
             # print('checker ', time.time() * 1000- startTime)
-            return score, 0
+            return score
         # print('checker ', time.time() * 1000 - startTime)
-        return score, 0
+        return score
 
     @classmethod
     def field_checker(cls, obj1, obj2, score):
@@ -81,25 +84,25 @@ class Big(object):
         ab = cls.absent_fields(obj1, obj2)
         scores = deepcopy(cls.col_scores)
         if ab > 0:
-            print(ab)
             ab = 100 - ab
             for col in scores.keys():
+                if col == 'name':
+                    continue
                 scores[col] = 100 * (scores[col] / ab)
-        print(scores)
-        name = score
-        name_total = 35
+        # print(scores)
         score = 0
         for field in cls.col_names.keys():
+            if field == 'name':
+                continue
             if field in cls.col_scores.keys():
-                score, flag= cls.checker(obj1[cls.col_names[field]], obj2[cls.col_names[field]], score=score, ad=scores[field])
-                # if flag == 1:
-                #     name_total = name_total + scores[field]
-                #     name = cls.name_matcher(obj1[cls.col_names['name']], obj2[cls.col_names['name']], name_total)
-                #     print(name)
-        return score, name
+                score = cls.checker(obj1[cls.col_names[field]], obj2[cls.col_names[field]], score=score, ad=scores[field])
+        return score
 
     @classmethod
     def dup(cls, chunk1, chunk2):
+        name_score = cls.col_scores['name']
+        lower = 0.4*name_score
+        upper = 0.9*name_score
         cols = cls.col_names
         p = {}
         for pos1, obj1 in chunk1.iterrows():
@@ -115,27 +118,32 @@ class Big(object):
                     if n1:
                         name1 = n1[0][1]
                     if n2:
+                        # print(n2)
                         name2 = n2[0][1]
-                    name = cls.name_matcher(name1, name2, 35)
+                    # print(cls.col_scores['name'])
+
+                    name = cls.name_matcher(name1, name2, name_score)
+
                     # print('on 40', name)
                     # input('check')
-                    if 14 < name < 30.1:
+                    if lower < name < upper:
                         if cols['mobile'] and cols['email'] is not None:
                             if obj1[cols['mobile']] == obj2[cols['mobile']] or obj2[cols['email']] == obj1[cols['email']]:
                                 if obj1[cols['mobile']] == '' or obj1[cols['email']] == '':
                                     continue
-                                score, name = cls.field_checker(obj1, obj2, name)
-                                if score+name >= 80:
-                                    print(obj1['id'], obj2['id'], score, name)
-                                    s.append(obj2['Doctor Code'])
-                    elif name >= 30.2:
-                        score, name = cls.field_checker(obj1, obj2, name)
+                                score = cls.field_checker(obj1, obj2, name)
+                                if score+name >= 65:
+                                    print(obj1[cols['id']], obj2[cols['id']], score, name)
+                                    s.append(obj2[cols['id']])
+                    elif name >= upper:
+                        score = cls.field_checker(obj1, obj2, name)
                         # print('>=32', name1, name2, score)
-                        if score+name >= 80:
-                            print(obj1['id'],obj2['id'], score, name)
-                            s.append(obj2['Doctor Code'])
+                        if score+name >= 65:
+                            # print(cls.scores)
+                            print(obj1[cols['id']],obj2[cols['id']], score, name)
+                            s.append(obj2[cols['id']])
             if s:
-                p[obj1['Doctor Code']] = s
+                p[obj1[cols['id']]] = s
         # print('dup ', time.time() * 1000 - startTime)
         return p
 

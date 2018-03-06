@@ -4,9 +4,9 @@ import time
 import mysql.connector
 import sys
 
-
-# col_names = {'name': None, 'gender': None, 'age': None, 'city': None, 'speciality': None, 'mobile': None, 'email': None}
-col_names = {'id': 'id', 'name': 'name', 'gender': 'gender', 'age': 'age', 'city': 'city', 'speciality': 'speciality', 'mobile': 'mobile', 'email': 'email'}
+col_scores = {}
+col_names = {'name': None, 'gender': None, 'age': None, 'city': None, 'speciality': None, 'mobile': None, 'email': None}
+# col_names = {'id': 'id', 'name': 'name', 'gender': 'gender', 'age': 'age', 'city': 'city', 'speciality': 'speciality', 'mobile': 'mobile', 'email': 'email'}
 # col_scores = {}
 fmt = sys.argv[1]
 path = sys.argv[2]
@@ -21,18 +21,30 @@ elif fmt == 'sql':
     odf = pd.read_sql_query('select * from {}'.format(path), con=con)
 
 
+x = int(input('Are there two name fields? 0 or 1 - '))
+if x == 1:
+    odf['names'] = ''
+    names = []
+    y = int(input('how many are there? (num) -'))
+    for i in range(y):
+        names.append(input('enter {} name field -'.format(i)))
+    for name in names:
+        odf['names'] = odf['names'] + odf[name] + ' '
 
-# for col in col_names.keys():
-#     x = input('enter the column name for {} - '.format(col))
-#     if x is not '':
-#         col_names[col] = x
-#         col_scores[col] = input('enter the {} score - '.format(x))
-# x = input('please enter unique field name - ')
-# if x is not '':
-#     col_names['id'] = x
-col_scores = {'email':15, 'age':15, 'city':10, 'gender':5, 'speciality':5, 'mobile':15}
-
-
+for col in col_names.keys():
+    if x == 1:
+        col_names[col] = 'names'
+        col_scores[col] = int(input('enter the {} score - '.format(col)))
+        x = 0
+        continue
+    x = input('enter the column name for {} - '.format(col))
+    if x is not '':
+        col_names[col] = x
+        col_scores[col] = int(input('enter the {} score - '.format(x)))
+x = input('please enter unique field name - ')
+if x is not '':
+    col_names['id'] = x
+# col_scores = {'email':15, 'age':15, 'city':10, 'gender':5, 'speciality':5, 'mobile':15}
 
 startTime = time.time() * 1000
 result = Big.process_dataframe(odf, col_scores, col_names)
