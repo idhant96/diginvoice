@@ -102,7 +102,7 @@ class Big(object):
     def dup(cls, chunk1, chunk2):
         name_score = cls.col_scores['name']
         lower = 0.4*name_score
-        upper = 0.9*name_score
+        upper = 0.95*name_score
         cols = cls.col_names
         p = {}
         for pos1, obj1 in chunk1.iterrows():

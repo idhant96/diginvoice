@@ -67,11 +67,11 @@ for gender in result:
                         flag = flag + 1
                 if flag > 0:
                     continue
-                row = odf.loc[odf['Doctor Code'] == pos1]
+                row = odf.loc[odf[col_names['id']] == pos1]
                 row['matchwith'] = 'matched'
                 # odf.loc[pos1, 'matchwith'] = 'matched'
                 df = df.append(row)
-                df = df.append(odf.loc[odf['Doctor Code'] == pos2])
+                df = df.append(odf.loc[odf[col_names['id']] == pos2])
                 added.append((pos1, pos2))
 # print(added)
 df.to_excel(writer, 'sheet1')
