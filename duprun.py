@@ -42,11 +42,11 @@ for col in col_names.keys():
 x = input('please enter unique field name - ')
 if x is not '':
     col_names['id'] = x
-
+x = input('enter the name of file...  -')
 startTime = time.time() * 1000
 result = Big.process_dataframe(odf, col_scores, col_names)
 odf['matchwith'] = ''
-writer = pd.ExcelWriter('results/afd.xlsx')
+writer = pd.ExcelWriter('results/{}.xlsx'.format(str(x)))
 added = []
 
 for gender in result:
